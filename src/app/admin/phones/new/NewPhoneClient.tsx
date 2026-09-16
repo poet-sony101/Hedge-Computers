@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import {
   ArrowLeft,
   PlusCircle,
@@ -57,16 +56,6 @@ const POPULAR_ACCESSORY_BRANDS = [
   "Belkin",
   "Oraimo",
   "UGREEN",
-];
-
-const PRESET_IMAGES = [
-  { label: "iPhone 15 Pro Max", path: "/phones/iphone15promax.jpg" },
-  { label: "Samsung Galaxy S25 Ultra", path: "/phones/s25ultra.jpg" },
-  { label: "Google Pixel 9 Pro", path: "/phones/pixel9pro.jpg" },
-  { label: "MacBook Pro 16 M3 Max", path: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80" },
-  { label: "Apple Watch Ultra 2", path: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&q=80" },
-  { label: "AirPods Pro", path: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=800&q=80" },
-  { label: "Anker MagGo Power Bank", path: "https://images.unsplash.com/photo-1609592424307-88d4515eebe2?w=800&q=80" },
 ];
 
 export default function NewPhoneClient() {

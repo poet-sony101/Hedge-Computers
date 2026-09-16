@@ -11,7 +11,6 @@ import {
   Loader2,
   Link as LinkIcon,
   AlertCircle,
-  Eye,
 } from "lucide-react";
 
 interface ImageUploaderProps {

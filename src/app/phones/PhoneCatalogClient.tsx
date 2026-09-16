@@ -16,7 +16,7 @@ interface PhoneCatalogClientProps {
 export default function PhoneCatalogClient({
   initialPhones,
 }: PhoneCatalogClientProps) {
-  const allPhones = initialPhones ?? [];
+  const allPhones = useMemo(() => initialPhones ?? [], [initialPhones]);
   const searchParams = useSearchParams();
   const router = useRouter();
 
