@@ -15,9 +15,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "New Dawn Technologies | Premium Smartphone Catalog & Inquiry",
+  title: "New Dawn Technologies | Premium Tech Catalog & Inquiries",
   description:
-    "Explore genuine smartphones and request today's best market price directly on WhatsApp.",
+    "Explore genuine smartphones, MacBooks, laptops, smartwatches, and accessories in Computer Village, Ikeja, Lagos. Request today's best market price directly on WhatsApp.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

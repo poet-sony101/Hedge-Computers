@@ -16,6 +16,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { PhoneCondition, DeviceCategory } from "@/types/phone";
+import ImageUploader from "@/components/admin/ImageUploader";
 
 const POPULAR_PHONE_BRANDS = [
   "Apple",
@@ -82,7 +83,7 @@ export default function NewPhoneClient() {
     storage: "256GB",
     storageOptions: "128GB, 256GB, 512GB",
     colors: "Black, Silver, Blue",
-    image: "/phones/iphone15promax.jpg",
+    image: "",
     priceNote: "Price on daily request (market rate)",
     inStock: true,
     featured: false,
@@ -100,6 +101,8 @@ export default function NewPhoneClient() {
     ports: "",
     batteryHealth: "",
   });
+
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
 
   const isLaptop = formData.category === "laptop";
   const isGadget = formData.category === "gadget";
@@ -168,6 +171,12 @@ export default function NewPhoneClient() {
     setLoading(true);
 
     try {
+      if (!formData.image) {
+        setError("Please choose or upload a main picture for this device.");
+        setLoading(false);
+        return;
+      }
+
       const storageArr = formData.storageOptions
         .split(",")
         .map((s) => s.trim())
@@ -188,7 +197,7 @@ export default function NewPhoneClient() {
         storageOptions: storageArr.length > 0 ? storageArr : [formData.storage],
         colors: colorsArr,
         image: formData.image,
-        images: [formData.image],
+        images: [formData.image, ...galleryImages].filter(Boolean),
         priceNote: formData.priceNote,
         inStock: formData.inStock,
         featured: formData.featured,
@@ -690,54 +699,18 @@ export default function NewPhoneClient() {
         <div className="rounded-3xl border border-white/10 bg-zinc-950/60 p-6 sm:p-8 backdrop-blur-xl space-y-5">
           <div className="flex items-center gap-2 pb-3 border-b border-white/10">
             <h2 className="text-sm font-bold uppercase tracking-wider text-white">
-              4. Product Image
+              4. Product Pictures & Media
             </h2>
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-              Select Preset or Enter Custom Image URL
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
-              {PRESET_IMAGES.map((preset) => (
-                <button
-                  key={preset.path}
-                  type="button"
-                  onClick={() =>
-                    setFormData({ ...formData, image: preset.path })
-                  }
-                  className={`flex items-center gap-3 p-3 rounded-2xl border text-left transition ${
-                    formData.image === preset.path
-                      ? "border-blue-500 bg-blue-500/10"
-                      : "border-white/10 bg-zinc-900/60 hover:bg-zinc-800"
-                  }`}
-                >
-                  <div className="relative h-10 w-10 shrink-0 rounded-lg bg-zinc-900 overflow-hidden flex items-center justify-center">
-                    <Image
-                      src={preset.path}
-                      alt={preset.label}
-                      width={36}
-                      height={36}
-                      className="object-contain"
-                    />
-                  </div>
-                  <span className="text-[11px] font-medium text-white line-clamp-2">
-                    {preset.label}
-                  </span>
-                </button>
-              ))}
-            </div>
-
-            <input
-              type="text"
-              value={formData.image}
-              onChange={(e) =>
-                setFormData({ ...formData, image: e.target.value })
-              }
-              placeholder="/phones/iphone15promax.jpg or https://..."
-              className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-4 py-2.5 text-xs text-white outline-none focus:border-blue-500 font-mono"
-            />
-          </div>
+          <ImageUploader
+            primaryImage={formData.image}
+            galleryImages={galleryImages}
+            onPrimaryChange={(url) =>
+              setFormData((prev) => ({ ...prev, image: url }))
+            }
+            onGalleryChange={setGalleryImages}
+          />
         </div>
 
         {/* Submit Action */}

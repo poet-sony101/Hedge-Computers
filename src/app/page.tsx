@@ -5,13 +5,19 @@ import FeaturedPhones from "@/components/home/FeaturedPhones";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
 import CTA from "@/components/home/CTA";
 import Footer from "@/components/layout/Footer";
+import { getAllPhones } from "@/services/phoneService";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const products = await getAllPhones();
+  const spotlight = products.find((p) => p.featured) || products[0] || null;
+
   return (
     <>
       <Navbar />
       <main className="min-h-screen">
-        <Hero />
+        <Hero spotlightProduct={spotlight} />
         <Brands />
         <FeaturedPhones />
         <WhyChooseUs />

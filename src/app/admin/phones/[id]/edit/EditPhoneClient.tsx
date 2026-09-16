@@ -16,6 +16,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Phone, PhoneCondition, DeviceCategory } from "@/types/phone";
+import ImageUploader from "@/components/admin/ImageUploader";
 
 interface EditPhoneClientProps {
   phone: Phone;
@@ -73,6 +74,10 @@ export default function EditPhoneClient({ phone }: EditPhoneClientProps) {
     batteryHealth: phone.specs?.batteryHealth || "",
   });
 
+  const [galleryImages, setGalleryImages] = useState<string[]>(
+    (phone.images || []).filter((img) => img !== phone.image)
+  );
+
   const isLaptop = formData.category === "laptop";
 
   const categoryLabel =
@@ -90,6 +95,12 @@ export default function EditPhoneClient({ phone }: EditPhoneClientProps) {
     setLoading(true);
 
     try {
+      if (!formData.image) {
+        setError("Please provide or upload a main picture for this device.");
+        setLoading(false);
+        return;
+      }
+
       const storageArr = formData.storageOptions
         .split(",")
         .map((s) => s.trim())
@@ -110,6 +121,7 @@ export default function EditPhoneClient({ phone }: EditPhoneClientProps) {
         storageOptions: storageArr.length > 0 ? storageArr : [formData.storage],
         colors: colorsArr,
         image: formData.image,
+        images: [formData.image, ...galleryImages].filter(Boolean),
         priceNote: formData.priceNote,
         inStock: formData.inStock,
         featured: formData.featured,
@@ -537,23 +549,18 @@ export default function EditPhoneClient({ phone }: EditPhoneClientProps) {
         <div className="rounded-3xl border border-white/10 bg-zinc-950/60 p-6 sm:p-8 backdrop-blur-xl space-y-5">
           <div className="flex items-center gap-2 pb-3 border-b border-white/10">
             <h2 className="text-sm font-bold uppercase tracking-wider text-white">
-              4. Image Path
+              4. Product Pictures & Media
             </h2>
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-              Image URL / Path
-            </label>
-            <input
-              type="text"
-              value={formData.image}
-              onChange={(e) =>
-                setFormData({ ...formData, image: e.target.value })
-              }
-              className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-4 py-2.5 text-xs text-white outline-none focus:border-blue-500 font-mono"
-            />
-          </div>
+          <ImageUploader
+            primaryImage={formData.image}
+            galleryImages={galleryImages}
+            onPrimaryChange={(url) =>
+              setFormData((prev) => ({ ...prev, image: url }))
+            }
+            onGalleryChange={setGalleryImages}
+          />
         </div>
 
         {/* Actions */}

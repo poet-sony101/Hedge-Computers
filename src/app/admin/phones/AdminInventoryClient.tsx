@@ -436,8 +436,23 @@ export default function AdminInventoryClient({
         </div>
 
         {filteredPhones.length === 0 && (
-          <div className="p-12 text-center text-zinc-500">
-            No devices match the active filters.
+          <div className="p-12 text-center text-zinc-500 space-y-4">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-900 text-zinc-400 border border-white/5">
+              <PlusCircle className="h-7 w-7 text-blue-400" />
+            </div>
+            <div>
+              <p className="text-base font-bold text-white">Your Inventory is Empty</p>
+              <p className="text-xs text-zinc-400 mt-1 max-w-sm mx-auto">
+                No products are currently published. Click below to add your first smartphone, laptop, or gadget listing.
+              </p>
+            </div>
+            <Link
+              href="/admin/phones/new"
+              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-blue-500 shadow-md shadow-blue-900/30"
+            >
+              <PlusCircle className="h-4 w-4" />
+              <span>Add Your First Product</span>
+            </Link>
           </div>
         )}
       </div>

@@ -3,11 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight, MessageCircle, ShieldCheck, Zap, Laptop, Smartphone } from "lucide-react";
+import { ArrowRight, MessageCircle, ShieldCheck, Zap, Laptop, Smartphone, Sparkles, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getGeneralInquiryUrl } from "@/utils/whatsapp";
+import { Phone } from "@/types/phone";
 
-export default function Hero() {
+interface HeroProps {
+  spotlightProduct?: Phone | null;
+}
+
+export default function Hero({ spotlightProduct }: HeroProps) {
   const whatsappUrl = getGeneralInquiryUrl();
 
   return (
@@ -103,60 +108,105 @@ export default function Hero() {
             <div className="absolute inset-0 rounded-[48px] bg-gradient-to-tr from-blue-600/30 to-sky-400/20 blur-2xl" />
 
             {/* Showcase Device Card */}
-            <div className="relative overflow-hidden rounded-[40px] border border-white/10 bg-zinc-950/80 p-6 backdrop-blur-xl shadow-2xl">
-              <div className="flex items-center justify-between pb-4 border-b border-white/5">
-                <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-                  Spotlight Flagship
-                </span>
-                <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-400 border border-emerald-500/20">
-                  <ShieldCheck className="h-3 w-3" />
-                  In Stock
-                </span>
-              </div>
-
-              {/* Spotlight Image */}
-              <div className="relative my-6 flex h-64 items-center justify-center">
-                <Image
-                  src="/phones/iphone15promax.jpg"
-                  alt="iPhone 15 Pro Max"
-                  width={240}
-                  height={240}
-                  className="max-h-56 w-auto object-contain drop-shadow-2xl"
-                  priority
-                />
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-baseline justify-between">
-                  <h3 className="text-lg font-bold text-white">
-                    iPhone 15 Pro Max
-                  </h3>
-                  <span className="text-xs font-medium text-blue-400">
-                    256GB • UK Used
+            {spotlightProduct ? (
+              <div className="relative overflow-hidden rounded-[40px] border border-white/10 bg-zinc-950/80 p-6 backdrop-blur-xl shadow-2xl">
+                <div className="flex items-center justify-between pb-4 border-b border-white/5">
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                    Spotlight Flagship
+                  </span>
+                  <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-400 border border-emerald-500/20">
+                    <ShieldCheck className="h-3 w-3" />
+                    {spotlightProduct.inStock ? "In Stock" : "Available to Order"}
                   </span>
                 </div>
-                <p className="text-xs text-zinc-400">
-                  Grade A+ Pristine • Natural Titanium • 100% Inspected
-                </p>
 
-                <div className="grid grid-cols-2 gap-2 pt-1">
-                  <Link
-                    href="/phones"
-                    className="flex items-center justify-center gap-1 rounded-xl bg-blue-600 py-2.5 text-xs font-semibold text-white transition hover:bg-blue-500"
-                  >
-                    <span>All Phones</span>
-                    <ArrowRight className="h-3 w-3" />
-                  </Link>
-                  <Link
-                    href="/laptops"
-                    className="flex items-center justify-center gap-1 rounded-xl border border-white/10 bg-zinc-900 py-2.5 text-xs font-semibold text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
-                  >
-                    <span>All Laptops</span>
-                    <ArrowRight className="h-3 w-3" />
-                  </Link>
+                {/* Spotlight Image */}
+                <div className="relative my-6 flex h-64 items-center justify-center">
+                  <Image
+                    src={spotlightProduct.image}
+                    alt={spotlightProduct.name}
+                    width={240}
+                    height={240}
+                    className="max-h-56 w-auto object-contain drop-shadow-2xl"
+                    priority
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-baseline justify-between">
+                    <h3 className="text-lg font-bold text-white">
+                      {spotlightProduct.name}
+                    </h3>
+                    <span className="text-xs font-medium text-blue-400">
+                      {spotlightProduct.storage} • {spotlightProduct.condition}
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-400 line-clamp-1">
+                    {spotlightProduct.tagline || "Grade A+ Pristine • 100% Inspected"}
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <Link
+                      href={`/phones/${spotlightProduct.slug}`}
+                      className="flex items-center justify-center gap-1 rounded-xl bg-blue-600 py-2.5 text-xs font-semibold text-white transition hover:bg-blue-500"
+                    >
+                      <span>View Details</span>
+                      <ArrowRight className="h-3 w-3" />
+                    </Link>
+                    <Link
+                      href="/products"
+                      className="flex items-center justify-center gap-1 rounded-xl border border-white/10 bg-zinc-900 py-2.5 text-xs font-semibold text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
+                    >
+                      <span>All Products</span>
+                      <ArrowRight className="h-3 w-3" />
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="relative overflow-hidden rounded-[40px] border border-white/10 bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 p-7 backdrop-blur-xl shadow-2xl space-y-5">
+                <div className="flex items-center justify-between pb-3 border-b border-white/5">
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                    Lagos Tech Hub
+                  </span>
+                  <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-400 border border-emerald-500/20">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Computer Village, Ikeja
+                  </span>
+                </div>
+
+                <div className="relative my-6 flex flex-col items-center justify-center py-6 text-center">
+                  <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-tr from-blue-600 to-sky-400 text-white shadow-xl shadow-blue-500/30 mb-4">
+                    <Sparkles className="h-10 w-10" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">
+                    Direct Device Sourcing
+                  </h3>
+                  <p className="mt-1.5 text-xs text-zinc-400 max-w-[260px] leading-relaxed">
+                    Flagship phones, MacBooks, and premium accessories sourced with live wholesale market rates.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 pt-2">
+                  <Link
+                    href="/request"
+                    className="flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 py-2.5 text-xs font-semibold text-white transition hover:bg-blue-500 shadow-md shadow-blue-900/30"
+                  >
+                    <Layers className="h-3.5 w-3.5" />
+                    <span>Request Device</span>
+                  </Link>
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-950/30 py-2.5 text-xs font-semibold text-emerald-400 transition hover:bg-emerald-900/40"
+                  >
+                    <MessageCircle className="h-3.5 w-3.5" />
+                    <span>WhatsApp</span>
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </motion.div>
       </div>

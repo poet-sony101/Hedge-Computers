@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
+import { revalidatePath } from "next/cache";
 import { Phone } from "@/types/phone";
-import { phones as fallbackPhones } from "@/data/phones";
 
 const DATA_FILE_PATH = path.join(process.cwd(), "src", "data", "phones.json");
 
@@ -10,14 +10,14 @@ function readData(): Phone[] {
     if (fs.existsSync(DATA_FILE_PATH)) {
       const content = fs.readFileSync(DATA_FILE_PATH, "utf-8");
       const parsed = JSON.parse(content);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         return parsed;
       }
     }
   } catch (error) {
-    console.error("Error reading phones.json, using fallback:", error);
+    console.error("Error reading phones.json:", error);
   }
-  return fallbackPhones;
+  return [];
 }
 
 function writeData(phones: Phone[]): boolean {
@@ -73,6 +73,9 @@ export async function createPhone(
 
   phones.unshift(newPhone);
   writeData(phones);
+  try {
+    revalidatePath("/", "layout");
+  } catch {}
   return newPhone;
 }
 
@@ -92,6 +95,9 @@ export async function updatePhone(
 
   phones[index] = updated;
   writeData(phones);
+  try {
+    revalidatePath("/", "layout");
+  } catch {}
   return updated;
 }
 
@@ -101,5 +107,9 @@ export async function deletePhone(id: number): Promise<boolean> {
   if (index === -1) return false;
 
   phones.splice(index, 1);
-  return writeData(phones);
+  const success = writeData(phones);
+  try {
+    revalidatePath("/", "layout");
+  } catch {}
+  return success;
 }

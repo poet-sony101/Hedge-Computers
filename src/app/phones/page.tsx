@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 export default async function PhonesPage() {
   const allDevices = await getAllPhones();
-  const phones = allDevices.filter((d) => d.category !== "laptop");
+  const phones = allDevices.filter((d) => !d.category || d.category === "phone");
 
   return (
     <>

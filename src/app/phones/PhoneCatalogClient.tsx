@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Search, Filter, X, Smartphone, ArrowRight } from "lucide-react";
 import { Phone } from "@/types/phone";
 import PhoneCard from "@/components/phone/PhoneCard";
-import { phones as defaultPhones, BRANDS } from "@/data/phones";
 
 const CONDITIONS = ["All", "Brand New", "UK Used"];
 
@@ -17,9 +16,17 @@ interface PhoneCatalogClientProps {
 export default function PhoneCatalogClient({
   initialPhones,
 }: PhoneCatalogClientProps) {
-  const allPhones = initialPhones && initialPhones.length > 0 ? initialPhones : defaultPhones;
+  const allPhones = initialPhones ?? [];
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  const availableBrands = useMemo(() => {
+    const set = new Set<string>(["All", "Apple", "Samsung", "Google", "Xiaomi", "Tecno"]);
+    allPhones.forEach((p) => {
+      if (p.brand) set.add(p.brand);
+    });
+    return Array.from(set);
+  }, [allPhones]);
 
   const selectedBrand = searchParams.get("brand") || "All";
   const selectedCondition = searchParams.get("condition") || "All";
@@ -125,7 +132,7 @@ export default function PhoneCatalogClient({
               <Filter className="h-3.5 w-3.5" />
               Brand:
             </span>
-            {BRANDS.map((brand) => {
+            {availableBrands.map((brand) => {
               const active = selectedBrand === brand;
               return (
                 <button
