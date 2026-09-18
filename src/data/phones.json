@@ -1,1 +1,84 @@
-[]
+[
+  {
+    "name": "Samsung Galaxy S25 Ultra",
+    "slug": "samsung-galaxy-s25-ultra",
+    "brand": "Samsung",
+    "category": "phone",
+    "storage": "512GB",
+    "storageOptions": [
+      "256GB",
+      "512GB",
+      "1TB"
+    ],
+    "condition": "UK Used",
+    "colors": [
+      "Titanium Gray",
+      "Titanium Black"
+    ],
+    "image": "/images/placeholder-phone.svg",
+    "images": [
+      "/images/placeholder-phone.svg"
+    ],
+    "featured": true,
+    "inStock": true,
+    "tagline": "",
+    "overview": "",
+    "priceNote": "Price on daily request",
+    "specs": {},
+    "id": 3
+  },
+  {
+    "name": "MacBook Pro 16 M3 Max",
+    "slug": "macbook-pro-16-m3-max",
+    "brand": "Apple",
+    "category": "laptop",
+    "storage": "1TB SSD",
+    "storageOptions": [
+      "512GB SSD",
+      "1TB SSD",
+      "2TB SSD"
+    ],
+    "condition": "UK Used",
+    "colors": [
+      "Space Black",
+      "Silver"
+    ],
+    "image": "/uploads/product-1789729862266-zub2e8.jpg",
+    "images": [
+      "/uploads/product-1789729862266-zub2e8.jpg"
+    ],
+    "featured": true,
+    "inStock": true,
+    "tagline": "",
+    "overview": "",
+    "priceNote": "₦3,850,000 promo today",
+    "specs": {},
+    "id": 2
+  },
+  {
+    "name": "iPhone 16 Pro Max",
+    "slug": "iphone-16-pro-max",
+    "brand": "Apple",
+    "category": "phone",
+    "storage": "256GB",
+    "storageOptions": [
+      "128GB",
+      "256GB"
+    ],
+    "condition": "UK Used",
+    "colors": [
+      "Black"
+    ],
+    "image": "/images/placeholder-phone.svg",
+    "images": [
+      "/images/placeholder-phone.svg"
+    ],
+    "featured": false,
+    "inStock": true,
+    "tagline": "",
+    "overview": "",
+    "priceNote": "Price on request",
+    "specs": {},
+    "id": 1
+  }
+]

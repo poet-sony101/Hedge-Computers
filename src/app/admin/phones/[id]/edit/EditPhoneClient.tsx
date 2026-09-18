@@ -163,8 +163,12 @@ export default function EditPhoneClient({ phone }: EditPhoneClientProps) {
         return;
       }
 
-      router.push("/admin/phones");
-      router.refresh();
+      if (typeof window !== "undefined") {
+        window.location.href = "/admin/phones";
+      } else {
+        router.push("/admin/phones");
+        router.refresh();
+      }
     } catch {
       setError("An unexpected error occurred while saving modifications.");
       setLoading(false);

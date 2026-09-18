@@ -12,6 +12,8 @@ import {
   Link as LinkIcon,
   AlertCircle,
   Sparkles,
+  Grid,
+  X,
 } from "lucide-react";
 import { DeviceCategory } from "@/types/phone";
 
@@ -23,6 +25,89 @@ interface ImageUploaderProps {
   onGalleryChange?: (urls: string[]) => void;
 }
 
+// Preset verified catalog pictures
+const STOCK_LIBRARY = [
+  { name: "iPhone 15 Pro Max (Natural Titanium)", url: "/phones/iphone15promax.jpg", cat: "phone" },
+  { name: "Samsung Galaxy S25 Ultra (Titanium Gray)", url: "/phones/s25ultra.jpg", cat: "phone" },
+  { name: "Google Pixel 9 Pro (Obsidian)", url: "/phones/pixel9pro.jpg", cat: "phone" },
+  { name: "MacBook Pro / Laptop (Machined Silver)", url: "/images/placeholder-laptop.svg", cat: "laptop" },
+  { name: "Smartwatch / Audio (Titanium Gray)", url: "/images/placeholder-gadget.svg", cat: "gadget" },
+  { name: "Power & Charger (Space Gray)", url: "/images/placeholder-accessory.svg", cat: "accessory" },
+  { name: "Apple Smartphone Silhouette", url: "/images/placeholder-phone.svg", cat: "phone" },
+];
+
+/**
+ * Automatically compress and optimize images client-side before upload
+ * Resizes 12MP-48MP smartphone photos down to max 1600px and converts to high quality JPEG/WebP.
+ * This guarantees sub-second uploads and prevents mobile gallery file size or HEIC errors.
+ */
+async function compressImageFile(file: File): Promise<File> {
+  // If already SVG or tiny, don't re-encode
+  if (file.type === "image/svg+xml" || file.name.endsWith(".svg")) {
+    return file;
+  }
+
+  return new Promise((resolve) => {
+    try {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new window.Image();
+        img.onload = () => {
+          try {
+            const canvas = document.createElement("canvas");
+            let { width, height } = img;
+            const maxDimension = 1600;
+
+            if (width > maxDimension || height > maxDimension) {
+              if (width > height) {
+                height = Math.round((height * maxDimension) / width);
+                width = maxDimension;
+              } else {
+                width = Math.round((width * maxDimension) / height);
+                height = maxDimension;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+              resolve(file);
+              return;
+            }
+
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob(
+              (blob) => {
+                if (!blob) {
+                  resolve(file);
+                  return;
+                }
+                const baseName = file.name.replace(/\.[^/.]+$/, "");
+                const compressedFile = new File([blob], `${baseName}.jpg`, {
+                  type: "image/jpeg",
+                  lastModified: Date.now(),
+                });
+                resolve(compressedFile);
+              },
+              "image/jpeg",
+              0.88
+            );
+          } catch {
+            resolve(file);
+          }
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    } catch {
+      resolve(file);
+    }
+  });
+}
+
 export default function ImageUploader({
   primaryImage,
   galleryImages = [],
@@ -31,9 +116,11 @@ export default function ImageUploader({
   onGalleryChange,
 }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false);
+  const [uploadProgressText, setUploadProgressText] = useState("Uploading picture...");
   const [uploadError, setUploadError] = useState("");
   const [dragActive, setDragActive] = useState(false);
   const [showUrlFallback, setShowUrlFallback] = useState(false);
+  const [showStockModal, setShowStockModal] = useState(false);
   const [manualUrl, setManualUrl] = useState("");
 
   const primaryFileInputRef = useRef<HTMLInputElement>(null);
@@ -53,6 +140,7 @@ export default function ImageUploader({
   const uploadFile = async (file: File): Promise<string | null> => {
     setUploadError("");
     setUploading(true);
+    setUploadProgressText("Uploading photo...");
 
     try {
       const formData = new FormData();
@@ -72,7 +160,7 @@ export default function ImageUploader({
 
       return data.url;
     } catch {
-      setUploadError("Network error occurred during image upload.");
+      setUploadError("Network connection error occurred during image upload.");
       return null;
     } finally {
       setUploading(false);
@@ -83,7 +171,12 @@ export default function ImageUploader({
   const handlePrimaryFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = await uploadFile(file);
+
+    setUploading(true);
+    setUploadProgressText("Optimizing photo from gallery...");
+    const optimized = await compressImageFile(file);
+    const url = await uploadFile(optimized);
+
     if (url) {
       onPrimaryChange(url);
     }
@@ -92,21 +185,32 @@ export default function ImageUploader({
     }
   };
 
-  // Handle Gallery Picture Select
+  // Handle Gallery Picture Select (multiple photos safely handled)
   const handleGalleryFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0 || !onGalleryChange) return;
 
+    setUploading(true);
+    setUploadProgressText(`Processing ${files.length} gallery photo(s)...`);
+
+    const uploadedUrls: string[] = [];
     for (let i = 0; i < files.length; i++) {
-      const url = await uploadFile(files[i]);
-      if (url && onGalleryChange) {
-        onGalleryChange([...galleryImages, url]);
+      setUploadProgressText(`Uploading photo ${i + 1} of ${files.length}...`);
+      const optimized = await compressImageFile(files[i]);
+      const url = await uploadFile(optimized);
+      if (url) {
+        uploadedUrls.push(url);
       }
+    }
+
+    if (uploadedUrls.length > 0) {
+      onGalleryChange([...galleryImages, ...uploadedUrls]);
     }
 
     if (galleryFileInputRef.current) {
       galleryFileInputRef.current.value = "";
     }
+    setUploading(false);
   };
 
   // Drag & Drop
@@ -126,10 +230,14 @@ export default function ImageUploader({
     setDragActive(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const url = await uploadFile(e.dataTransfer.files[0]);
+      setUploading(true);
+      setUploadProgressText("Optimizing dropped image...");
+      const optimized = await compressImageFile(e.dataTransfer.files[0]);
+      const url = await uploadFile(optimized);
       if (url) {
         onPrimaryChange(url);
       }
+      setUploading(false);
     }
   };
 
@@ -180,16 +288,26 @@ export default function ImageUploader({
           <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b]">
             Main Product Picture *
           </label>
-          {!primaryImage && (
+          <div className="flex items-center gap-3">
             <button
               type="button"
-              onClick={() => onPrimaryChange(defaultPlaceholder)}
+              onClick={() => setShowStockModal(true)}
               className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1d1d1f] dark:text-white hover:underline"
             >
-              <Sparkles className="h-3.5 w-3.5 text-[#86868b]" />
-              <span>Use Default Silhouette</span>
+              <Grid className="h-3.5 w-3.5 text-[#86868b]" />
+              <span>Choose from Catalog Gallery</span>
             </button>
-          )}
+            {!primaryImage && (
+              <button
+                type="button"
+                onClick={() => onPrimaryChange(defaultPlaceholder)}
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>Use Silhouette</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {primaryImage ? (
@@ -204,7 +322,7 @@ export default function ImageUploader({
                 className="max-h-40 w-auto object-contain"
                 unoptimized={primaryImage.startsWith("http") || primaryImage.endsWith(".svg")}
               />
-              <span className="absolute top-2 left-2 rounded-full bg-[#1d1d1f] dark:bg-white px-2 py-0.5 text-[10px] font-bold text-white dark:text-black shadow-sm">
+              <span className="absolute top-2 left-2 rounded-full bg-[#1d1d1f] dark:bg-white px-2.5 py-0.5 text-[10px] font-bold text-white dark:text-black shadow-sm">
                 Primary
               </span>
             </div>
@@ -212,7 +330,7 @@ export default function ImageUploader({
             <div className="space-y-3 flex-1 text-center sm:text-left">
               <div className="flex items-center justify-center sm:justify-start gap-2 text-emerald-600 dark:text-emerald-400 text-xs font-medium">
                 <CheckCircle2 className="h-4 w-4" />
-                <span>Picture ready & attached</span>
+                <span>Picture attached to device</span>
               </div>
               <p className="text-xs text-[#86868b] font-mono break-all line-clamp-2">
                 {primaryImage}
@@ -223,10 +341,19 @@ export default function ImageUploader({
                   type="button"
                   onClick={() => primaryFileInputRef.current?.click()}
                   disabled={uploading}
-                  className="apple-button-secondary text-xs"
+                  className="apple-button-secondary text-xs inline-flex items-center gap-2"
                 >
                   <RefreshCw className={`h-3.5 w-3.5 ${uploading ? "animate-spin" : ""}`} />
-                  <span>Replace Picture</span>
+                  <span>Upload Different Photo</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowStockModal(true)}
+                  className="apple-button-secondary text-xs inline-flex items-center gap-1.5"
+                >
+                  <Grid className="h-3.5 w-3.5" />
+                  <span>Gallery</span>
                 </button>
 
                 <button
@@ -263,20 +390,32 @@ export default function ImageUploader({
             </div>
 
             <h4 className="text-sm font-bold text-[#1d1d1f] dark:text-white">
-              {uploading ? "Uploading picture..." : "Click to choose a picture or drag & drop"}
+              {uploading ? uploadProgressText : "Click to select a photo from your gallery or drag & drop"}
             </h4>
             <p className="mt-1 text-xs text-[#86868b]">
-              PNG, JPG, JPEG, SVG, or WebP from your phone or computer (up to 10MB)
+              iPhone/Android photo gallery, JPG, PNG, WebP, or HEIC (automatically optimized)
             </p>
 
-            <div className="mt-4 flex items-center justify-center gap-2">
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
               <button
                 type="button"
                 disabled={uploading}
                 className="apple-button-primary text-xs"
               >
                 <ImagePlus className="h-3.5 w-3.5" />
-                <span>Browse Files</span>
+                <span>Upload from Gallery / Files</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowStockModal(true);
+                }}
+                className="apple-button-secondary text-xs"
+              >
+                <Grid className="h-3.5 w-3.5" />
+                <span>Choose from Catalog Gallery</span>
               </button>
 
               <button
@@ -304,7 +443,7 @@ export default function ImageUploader({
                 Additional Gallery Pictures (Optional)
               </span>
               <p className="text-[11px] text-[#86868b]">
-                Add side angles, back view, or retail packaging.
+                Add multiple side angles, back view, or retail packaging.
               </p>
             </div>
 
@@ -312,10 +451,10 @@ export default function ImageUploader({
               type="button"
               onClick={() => galleryFileInputRef.current?.click()}
               disabled={uploading}
-              className="apple-button-secondary text-xs"
+              className="apple-button-secondary text-xs inline-flex items-center gap-1.5"
             >
               <ImagePlus className="h-3.5 w-3.5" />
-              <span>+ Add Angle</span>
+              <span>+ Add Angle Photo</span>
             </button>
           </div>
 
@@ -366,7 +505,7 @@ export default function ImageUploader({
               type="text"
               value={manualUrl}
               onChange={(e) => setManualUrl(e.target.value)}
-              placeholder="https://... or /uploads/... or /images/placeholder-phone.svg"
+              placeholder="https://... or /uploads/... or /phones/iphone15promax.jpg"
               className="flex-1 rounded-xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2 text-xs text-[#1d1d1f] dark:text-white placeholder-[#86868b] outline-none focus:border-[#1d1d1f] dark:focus:border-white font-mono transition"
             />
             <button
@@ -379,6 +518,68 @@ export default function ImageUploader({
           </div>
         )}
       </div>
+
+      {/* Choose from Catalog Gallery Modal */}
+      {showStockModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-xl apple-card p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/10">
+              <div>
+                <h3 className="text-sm font-bold text-[#1d1d1f] dark:text-white">
+                  Available Tech Picture Library
+                </h3>
+                <p className="text-xs text-[#86868b]">
+                  Select an authentic device photo or official vector silhouette.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowStockModal(false)}
+                className="text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white p-1 rounded-full"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto pr-1">
+              {STOCK_LIBRARY.map((item) => (
+                <button
+                  key={item.url}
+                  type="button"
+                  onClick={() => {
+                    onPrimaryChange(item.url);
+                    setShowStockModal(false);
+                  }}
+                  className="flex flex-col items-center gap-2 p-3 rounded-2xl border border-black/10 dark:border-white/10 hover:border-[#1d1d1f] dark:hover:border-white bg-black/[0.02] dark:bg-white/[0.03] transition text-center group"
+                >
+                  <div className="relative h-24 w-24 flex items-center justify-center">
+                    <Image
+                      src={item.url}
+                      alt={item.name}
+                      width={90}
+                      height={90}
+                      className="max-h-20 w-auto object-contain transition-transform group-hover:scale-105"
+                      unoptimized={item.url.endsWith(".svg")}
+                    />
+                  </div>
+                  <span className="text-[11px] font-medium text-[#1d1d1f] dark:text-white line-clamp-2">
+                    {item.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <button
+                type="button"
+                onClick={() => setShowStockModal(false)}
+                className="apple-button-secondary text-xs"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

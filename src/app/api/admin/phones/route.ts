@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/adminAuth";
 import { getAllPhones, createPhone } from "@/services/phoneService";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
   const phones = await getAllPhones();
   return NextResponse.json({ phones });

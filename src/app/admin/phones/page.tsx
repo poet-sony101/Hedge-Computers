@@ -7,6 +7,9 @@ export const metadata = {
   title: "Manage Inventory | Admin | Available Tech",
 };
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AdminPhonesPage() {
   const authenticated = await isAdminAuthenticated();
   if (!authenticated) {

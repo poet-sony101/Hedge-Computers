@@ -15,6 +15,7 @@ import {
   AlertTriangle,
   X,
   ExternalLink,
+  RefreshCw,
 } from "lucide-react";
 import { Phone } from "@/types/phone";
 
@@ -31,6 +32,25 @@ export default function AdminInventoryClient({
   const [brandFilter, setBrandFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All"); // All, InStock, OutOfStock
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Client-side live data refresh
+  const fetchLivePhones = async () => {
+    setIsRefreshing(true);
+    try {
+      const res = await fetch("/api/admin/phones", { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.phones)) {
+          setPhones(data.phones);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to fetch fresh phones:", e);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   // Quick Price Edit Modal State
   const [editingPricePhone, setEditingPricePhone] = useState<Phone | null>(null);
@@ -191,13 +211,25 @@ export default function AdminInventoryClient({
           </p>
         </div>
 
-        <Link
-          href="/admin/phones/new"
-          className="inline-flex items-center gap-2 rounded-full bg-[#1d1d1f] hover:bg-black dark:bg-white dark:hover:bg-[#f5f5f7] px-5 py-2.5 text-xs font-semibold text-white dark:text-black shadow-lg shadow-black/10 transition"
-        >
-          <PlusCircle className="h-4 w-4" />
-          <span>Add Device</span>
-        </Link>
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={fetchLivePhones}
+            disabled={isRefreshing}
+            className="apple-button-secondary text-xs inline-flex items-center gap-2"
+            title="Refresh inventory list"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+            <span>{isRefreshing ? "Refreshing..." : "Refresh"}</span>
+          </button>
+
+          <Link
+            href="/admin/phones/new"
+            className="inline-flex items-center gap-2 rounded-full bg-[#1d1d1f] hover:bg-black dark:bg-white dark:hover:bg-[#f5f5f7] px-5 py-2.5 text-xs font-semibold text-white dark:text-black shadow-lg shadow-black/10 transition"
+          >
+            <PlusCircle className="h-4 w-4" />
+            <span>Add Device</span>
+          </Link>
+        </div>
       </div>
 
       {/* Search & Filters */}

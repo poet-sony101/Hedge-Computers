@@ -22,11 +22,29 @@ function readData(): Phone[] {
 
 function writeData(phones: Phone[]): boolean {
   try {
+    const dir = path.dirname(DATA_FILE_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
     fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(phones, null, 2), "utf-8");
     return true;
   } catch (error) {
     console.error("Error writing to phones.json:", error);
     return false;
+  }
+}
+
+function triggerRevalidation() {
+  try {
+    revalidatePath("/", "layout");
+    revalidatePath("/admin", "layout");
+    revalidatePath("/admin/phones", "page");
+    revalidatePath("/admin", "page");
+    revalidatePath("/phones", "page");
+    revalidatePath("/products", "page");
+    revalidatePath("/laptops", "page");
+  } catch {
+    // revalidatePath may throw in non-request contexts
   }
 }
 
@@ -73,9 +91,7 @@ export async function createPhone(
 
   phones.unshift(newPhone);
   writeData(phones);
-  try {
-    revalidatePath("/", "layout");
-  } catch {}
+  triggerRevalidation();
   return newPhone;
 }
 
@@ -95,9 +111,7 @@ export async function updatePhone(
 
   phones[index] = updated;
   writeData(phones);
-  try {
-    revalidatePath("/", "layout");
-  } catch {}
+  triggerRevalidation();
   return updated;
 }
 
@@ -108,8 +122,6 @@ export async function deletePhone(id: number): Promise<boolean> {
 
   phones.splice(index, 1);
   const success = writeData(phones);
-  try {
-    revalidatePath("/", "layout");
-  } catch {}
+  triggerRevalidation();
   return success;
 }
