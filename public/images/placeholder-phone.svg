@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="phoneBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2c2c2e"/>
+      <stop offset="50%" stop-color="#1c1c1e"/>
+      <stop offset="100%" stop-color="#141416"/>
+    </linearGradient>
+    <linearGradient id="phoneBorder" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#86868b"/>
+      <stop offset="50%" stop-color="#48484a"/>
+      <stop offset="100%" stop-color="#2c2c2e"/>
+    </linearGradient>
+    <linearGradient id="screenGloss" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="35%" stop-color="#ffffff" stop-opacity="0.02"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="innerScreen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1c1c1e"/>
+      <stop offset="100%" stop-color="#09090b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ambient Shadow -->
+  <ellipse cx="200" cy="365" rx="85" ry="14" fill="#000000" opacity="0.45" filter="blur(10px)"/>
+
+  <!-- Outer Phone Chassis with Titanium Edge -->
+  <rect x="120" y="45" width="160" height="305" rx="34" fill="url(#phoneBody)" stroke="url(#phoneBorder)" stroke-width="3"/>
+
+  <!-- Screen Bezel -->
+  <rect x="126" y="51" width="148" height="293" rx="28" fill="url(#innerScreen)"/>
+
+  <!-- Screen Glass Sheen -->
+  <path d="M126 79 C 126 63, 140 51, 154 51 L 246 51 C 260 51, 274 63, 274 79 L 274 150 L 126 220 Z" fill="url(#screenGloss)"/>
+
+  <!-- Dynamic Island Pill -->
+  <rect x="175" y="62" width="50" height="13" rx="6.5" fill="#000000"/>
+  <!-- Camera lens pin -->
+  <circle cx="214" cy="68.5" r="2.5" fill="#1c1c1e" stroke="#2c2c2e" stroke-width="0.5"/>
+
+  <!-- Home Indicator Bar -->
+  <rect x="172" y="332" width="56" height="3" rx="1.5" fill="#86868b" opacity="0.6"/>
+
+  <!-- Apple Aesthetic Badge / Geometric Monogram Icon in screen center -->
+  <g transform="translate(200, 195) scale(0.65)">
+    <circle cx="0" cy="0" r="30" fill="#2c2c2e" stroke="#48484a" stroke-width="1.5"/>
+    <path d="M-10 14 L0 -14 L10 14" stroke="#f5f5f7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="-6" y1="4" x2="6" y2="4" stroke="#86868b" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+</svg>

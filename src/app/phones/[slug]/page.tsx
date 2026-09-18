@@ -21,13 +21,13 @@ export async function generateMetadata({
 
   if (!phone) {
     return {
-      title: "Phone Not Found | New Dawn Technologies",
+      title: "Device Not Found | Available Tech",
     };
   }
 
   return {
-    title: `${phone.name} (${phone.storage}, ${phone.condition}) | New Dawn Technologies`,
-    description: `Inspect detailed specifications and request today's best market price for the ${phone.name} directly on WhatsApp. 100% verified authentic.`,
+    title: `${phone.name} (${phone.storage}, ${phone.condition}) | Available Tech`,
+    description: `Inspect detailed specifications and request today's best market price for the ${phone.name} directly on WhatsApp. 100% verified authentic by Available Tech.`,
   };
 }
 

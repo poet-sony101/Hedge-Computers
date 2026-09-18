@@ -14,13 +14,13 @@ export default async function FeaturedPhones() {
     <section className="container-custom py-20">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-blue-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
             Spotlight Collection
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-1 text-white">
+          <h2 className="text-3xl md:text-4xl font-bold mt-1 text-[#1d1d1f] dark:text-white tracking-tight">
             Featured Technology
           </h2>
-          <p className="mt-2 text-sm text-zinc-400">
+          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
             Hand-picked flagship smartphones, MacBooks, and smart wearables available for immediate inquiry.
           </p>
         </div>
@@ -28,10 +28,10 @@ export default async function FeaturedPhones() {
         {products.length > 0 && (
           <Link
             href="/products"
-            className="mt-4 md:mt-0 inline-flex items-center gap-2 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+            className="mt-4 md:mt-0 inline-flex items-center gap-1.5 text-xs font-semibold text-[#1d1d1f] dark:text-white hover:underline transition-colors"
           >
             <span>View all {products.length} products</span>
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         )}
       </div>
@@ -43,31 +43,31 @@ export default async function FeaturedPhones() {
           ))}
         </div>
       ) : (
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900/60 to-zinc-950/80 p-8 sm:p-12 text-center backdrop-blur-xl max-w-2xl mx-auto">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400 border border-blue-500/20 mb-5">
-            <Sparkles className="h-7 w-7" />
+        <div className="rounded-[32px] border border-black/[0.08] dark:border-white/10 bg-white dark:bg-[#1c1c1e] p-8 sm:p-12 text-center backdrop-blur-xl max-w-2xl mx-auto shadow-sm dark:shadow-2xl">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-[#1d1d1f] dark:text-white border border-black/[0.06] dark:border-white/10 mb-5">
+            <Sparkles className="h-6 w-6" />
           </div>
-          <h3 className="text-2xl font-bold text-white">
+          <h3 className="text-2xl font-bold text-[#1d1d1f] dark:text-white">
             New Stock Landing Daily
           </h3>
-          <p className="mt-3 text-sm text-zinc-400 leading-relaxed">
+          <p className="mt-2.5 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md mx-auto">
             Our daily Computer Village inventory rotates fast. Need a specific iPhone, MacBook, Samsung Galaxy, or accessory right now? We source, inspect, and verify it on demand.
           </p>
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/request"
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-xs font-semibold text-white hover:bg-blue-500 shadow-lg shadow-blue-900/30 transition"
+              className="inline-flex items-center gap-2 rounded-full bg-[#1d1d1f] hover:bg-black text-white dark:bg-white dark:text-black dark:hover:bg-zinc-200 px-6 py-2.5 text-xs font-semibold shadow-sm transition active:scale-95"
             >
-              <Layers className="h-4 w-4" />
+              <Layers className="h-3.5 w-3.5" />
               <span>Request a Device</span>
             </Link>
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-950/30 px-6 py-3 text-xs font-semibold text-emerald-400 hover:bg-emerald-900/40 transition"
+              className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 px-6 py-2.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 shadow-sm transition active:scale-95"
             >
-              <MessageCircle className="h-4 w-4 text-emerald-400" />
+              <MessageCircle className="h-3.5 w-3.5" />
               <span>Inquire on WhatsApp</span>
             </a>
           </div>

@@ -3,7 +3,7 @@ import { isAdminAuthenticated } from "@/lib/adminAuth";
 import NewPhoneClient from "./NewPhoneClient";
 
 export const metadata = {
-  title: "Add New Phone | Admin | New Dawn Technologies",
+  title: "Add Device | Admin | Available Tech",
 };
 
 export default async function NewPhonePage() {

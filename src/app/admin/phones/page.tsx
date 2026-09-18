@@ -4,7 +4,7 @@ import { getAllPhones } from "@/services/phoneService";
 import AdminInventoryClient from "./AdminInventoryClient";
 
 export const metadata = {
-  title: "Manage Inventory | Admin | New Dawn Technologies",
+  title: "Manage Inventory | Admin | Available Tech",
 };
 
 export default async function AdminPhonesPage() {

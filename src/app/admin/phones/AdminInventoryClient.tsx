@@ -27,7 +27,7 @@ export default function AdminInventoryClient({
 }: AdminInventoryClientProps) {
   const [phones, setPhones] = useState<Phone[]>(initialPhones);
   const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("All"); // All, phone, laptop
+  const [categoryFilter, setCategoryFilter] = useState("All"); // All, phone, laptop, gadget, accessory
   const [brandFilter, setBrandFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All"); // All, InStock, OutOfStock
   const [updatingId, setUpdatingId] = useState<number | null>(null);
@@ -169,7 +169,7 @@ export default function AdminInventoryClient({
         setDeletingPhone(null);
       }
     } catch (err) {
-      console.error("Failed to delete phone", err);
+      console.error("Failed to delete device", err);
     } finally {
       setDeleteLoading(false);
     }
@@ -180,62 +180,62 @@ export default function AdminInventoryClient({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-blue-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#86868b]">
             Catalog Management
           </span>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white mt-1">
+          <h1 className="text-3xl font-extrabold tracking-tight text-[#1d1d1f] dark:text-white mt-1">
             Device Inventory
           </h1>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-[#86868b] mt-1">
             Live database of smartphones, laptops, smartwatches, audio, and accessories. Toggle availability or click to adjust daily pricing notes.
           </p>
         </div>
 
         <Link
           href="/admin/phones/new"
-          className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-500 shadow-lg shadow-blue-900/40"
+          className="inline-flex items-center gap-2 rounded-full bg-[#1d1d1f] hover:bg-black dark:bg-white dark:hover:bg-[#f5f5f7] px-5 py-2.5 text-xs font-semibold text-white dark:text-black shadow-lg shadow-black/10 transition"
         >
           <PlusCircle className="h-4 w-4" />
-          <span>Add New Device</span>
+          <span>Add Device</span>
         </Link>
       </div>
 
       {/* Search & Filters */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 rounded-3xl border border-white/10 bg-zinc-950/60 p-5 backdrop-blur-xl">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 apple-card p-5 shadow-sm">
         <div className="relative w-full md:w-96">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#86868b]" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Filter by name or model..."
-            className="w-full rounded-xl border border-white/10 bg-zinc-900/80 py-2.5 pl-10 pr-4 text-xs text-white placeholder-zinc-500 outline-none focus:border-blue-500"
+            className="w-full rounded-full border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 py-2 pl-10 pr-4 text-xs text-[#1d1d1f] dark:text-white placeholder-[#86868b] outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+        <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
           {/* Category Filter */}
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="rounded-xl border border-white/10 bg-zinc-900/80 px-3 py-2 text-xs text-white outline-none focus:border-blue-500"
+            className="rounded-full border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2 text-xs text-[#1d1d1f] dark:text-white outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
           >
-            <option value="All" className="bg-zinc-900">Type: All Devices</option>
-            <option value="phone" className="bg-zinc-900">Type: Smartphones</option>
-            <option value="laptop" className="bg-zinc-900">Type: Laptops</option>
-            <option value="gadget" className="bg-zinc-900">Type: Gadgets & Audio</option>
-            <option value="accessory" className="bg-zinc-900">Type: Power & Accessories</option>
+            <option value="All" className="bg-white dark:bg-zinc-900">Type: All Devices</option>
+            <option value="phone" className="bg-white dark:bg-zinc-900">Type: Smartphones</option>
+            <option value="laptop" className="bg-white dark:bg-zinc-900">Type: Laptops</option>
+            <option value="gadget" className="bg-white dark:bg-zinc-900">Type: Gadgets & Audio</option>
+            <option value="accessory" className="bg-white dark:bg-zinc-900">Type: Power & Accessories</option>
           </select>
 
           {/* Brand Filter */}
           <select
             value={brandFilter}
             onChange={(e) => setBrandFilter(e.target.value)}
-            className="rounded-xl border border-white/10 bg-zinc-900/80 px-3 py-2 text-xs text-white outline-none focus:border-blue-500"
+            className="rounded-full border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2 text-xs text-[#1d1d1f] dark:text-white outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
           >
-            <option value="All" className="bg-zinc-900">Brand: All</option>
+            <option value="All" className="bg-white dark:bg-zinc-900">Brand: All</option>
             {availableBrands.map((b) => (
-              <option key={b} value={b} className="bg-zinc-900">
+              <option key={b} value={b} className="bg-white dark:bg-zinc-900">
                 Brand: {b}
               </option>
             ))}
@@ -245,176 +245,167 @@ export default function AdminInventoryClient({
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-xl border border-white/10 bg-zinc-900/80 px-3 py-2 text-xs text-white outline-none focus:border-blue-500"
+            className="rounded-full border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2 text-xs text-[#1d1d1f] dark:text-white outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
           >
-            <option value="All" className="bg-zinc-900">Status: All</option>
-            <option value="InStock" className="bg-zinc-900">Status: In Stock</option>
-            <option value="OutOfStock" className="bg-zinc-900">Status: Out of Stock</option>
+            <option value="All" className="bg-white dark:bg-zinc-900">Status: All</option>
+            <option value="InStock" className="bg-white dark:bg-zinc-900">Status: In Stock</option>
+            <option value="OutOfStock" className="bg-white dark:bg-zinc-900">Status: Out of Stock</option>
           </select>
         </div>
       </div>
 
       {/* Inventory Table */}
-      <div className="overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/60 backdrop-blur-xl">
+      <div className="overflow-hidden apple-card shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="border-b border-white/10 bg-zinc-900/40 text-[11px] uppercase tracking-wider text-zinc-400">
+            <thead className="border-b border-black/5 dark:border-white/10 text-[11px] uppercase tracking-wider text-[#86868b] bg-black/[0.01] dark:bg-white/[0.02]">
               <tr>
-                <th className="py-4 px-6 font-semibold">Device</th>
-                <th className="py-4 px-4 font-semibold">Type</th>
-                <th className="py-4 px-4 font-semibold">Brand</th>
-                <th className="py-4 px-4 font-semibold">Condition</th>
-                <th className="py-4 px-4 font-semibold">Today&apos;s Price Note</th>
-                <th className="py-4 px-4 font-semibold text-center">In Stock</th>
-                <th className="py-4 px-4 font-semibold text-center">Featured</th>
-                <th className="py-4 px-6 font-semibold text-right">Actions</th>
+                <th className="py-3 px-4 font-semibold">Device</th>
+                <th className="py-3 px-4 font-semibold">Category</th>
+                <th className="py-3 px-4 font-semibold">Brand</th>
+                <th className="py-3 px-4 font-semibold">Condition</th>
+                <th className="py-3 px-4 font-semibold">Base Storage</th>
+                <th className="py-3 px-4 font-semibold">Pricing Note</th>
+                <th className="py-3 px-4 font-semibold text-center">In Stock</th>
+                <th className="py-3 px-4 font-semibold text-center">Featured</th>
+                <th className="py-3 px-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-black/5 dark:divide-white/5">
               {filteredPhones.map((phone) => (
                 <tr
                   key={phone.id}
-                  className="hover:bg-white/[0.02] transition-colors"
+                  className="hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition"
                 >
-                  {/* Device Info & Image */}
-                  <td className="py-4 px-6">
+                  {/* Name + Thumbnail */}
+                  <td className="py-3 px-4">
                     <div className="flex items-center gap-3">
-                      <div className="relative h-12 w-12 rounded-xl bg-zinc-900 p-1 flex items-center justify-center border border-white/5 overflow-hidden shrink-0">
+                      <div className="relative h-10 w-10 shrink-0 rounded-xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 p-1 flex items-center justify-center overflow-hidden">
                         <Image
                           src={phone.image}
                           alt={phone.name}
-                          width={40}
-                          height={40}
-                          className="max-h-10 w-auto object-contain"
+                          width={36}
+                          height={36}
+                          className="max-h-8 w-auto object-contain"
+                          unoptimized={phone.image.startsWith("http")}
                         />
                       </div>
-                      <div>
-                        <Link
-                          href={`/phones/${phone.slug}`}
-                          target="_blank"
-                          className="font-bold text-white hover:text-blue-400 inline-flex items-center gap-1 group"
-                        >
-                          <span>{phone.name}</span>
-                          <ExternalLink className="h-3 w-3 text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </Link>
-                        <p className="text-[11px] text-zinc-400">{phone.storage}</p>
+                      <div className="min-w-0">
+                        <p className="font-semibold text-[#1d1d1f] dark:text-white truncate max-w-[180px]">
+                          {phone.name}
+                        </p>
+                        <p className="text-[10px] text-[#86868b] font-mono truncate">
+                          /{phone.slug}
+                        </p>
                       </div>
                     </div>
                   </td>
 
-                  {/* Type */}
-                  <td className="py-4 px-4">
-                    <span
-                      className={`rounded-md px-2 py-0.5 text-[10px] font-semibold ${
-                        phone.category === "laptop"
-                          ? "bg-sky-500/15 text-sky-400 border border-sky-500/20"
-                          : phone.category === "gadget"
-                          ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20"
-                          : phone.category === "accessory"
-                          ? "bg-amber-500/15 text-amber-400 border border-amber-500/20"
-                          : "bg-purple-500/15 text-purple-400 border border-purple-500/20"
-                      }`}
-                    >
-                      {phone.category === "laptop"
-                        ? "Laptop"
-                        : phone.category === "gadget"
-                        ? "Gadget"
-                        : phone.category === "accessory"
-                        ? "Accessory"
-                        : "Phone"}
+                  {/* Category */}
+                  <td className="py-3 px-4">
+                    <span className="rounded-full bg-black/5 dark:bg-white/10 px-2.5 py-0.5 text-[10px] font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] capitalize">
+                      {phone.category || "phone"}
                     </span>
                   </td>
 
                   {/* Brand */}
-                  <td className="py-4 px-4">
-                    <span className="rounded-md bg-zinc-900 px-2 py-0.5 font-medium text-zinc-300 border border-white/5">
-                      {phone.brand}
-                    </span>
+                  <td className="py-3 px-4 font-medium text-[#1d1d1f] dark:text-white">
+                    {phone.brand}
                   </td>
 
                   {/* Condition */}
-                  <td className="py-4 px-4">
+                  <td className="py-3 px-4">
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
                         phone.condition === "Brand New"
-                          ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20"
-                          : "bg-blue-500/15 text-blue-400 border border-blue-500/20"
+                          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                          : "bg-black/5 dark:bg-white/10 text-[#1d1d1f] dark:text-white"
                       }`}
                     >
                       {phone.condition}
                     </span>
                   </td>
 
-                  {/* Price Note & Quick Edit */}
-                  <td className="py-4 px-4">
+                  {/* Storage */}
+                  <td className="py-3 px-4 text-[#86868b]">{phone.storage}</td>
+
+                  {/* Pricing Note */}
+                  <td className="py-3 px-4 max-w-[200px]">
                     <button
                       onClick={() => {
                         setEditingPricePhone(phone);
-                        setNewPriceNote(
-                          phone.priceNote || "Price on daily request (market rate)"
-                        );
+                        setNewPriceNote(phone.priceNote || "");
                       }}
-                      className="group flex items-center gap-2 text-left rounded-lg p-1.5 -ml-1.5 hover:bg-white/5 transition"
-                      title="Click to quickly update daily price note"
+                      className="group flex items-center gap-1.5 text-left text-[11px] text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white transition truncate w-full"
+                      title="Click to quickly edit daily price note"
                     >
-                      <span className="text-zinc-300 text-[11px] group-hover:text-blue-400">
-                        {phone.priceNote || "Price on request"}
-                      </span>
-                      <Edit2 className="h-3 w-3 text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <DollarSign className="h-3 w-3 shrink-0 text-[#86868b] group-hover:text-[#1d1d1f] dark:group-hover:text-white" />
+                      <span className="truncate">{phone.priceNote || "Daily rate on request"}</span>
+                      <Edit2 className="h-2.5 w-2.5 shrink-0 opacity-0 group-hover:opacity-100" />
                     </button>
                   </td>
 
                   {/* In Stock Toggle */}
-                  <td className="py-4 px-4 text-center">
+                  <td className="py-3 px-4 text-center">
                     <button
                       onClick={() => handleToggleStock(phone)}
                       disabled={updatingId === phone.id}
-                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold transition ${
+                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold transition ${
                         phone.inStock
-                          ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
-                          : "bg-rose-500/20 text-rose-400 hover:bg-rose-500/30"
+                          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20"
+                          : "bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20"
                       }`}
+                      title="Click to toggle availability"
                     >
                       {phone.inStock ? (
                         <>
-                          <CheckCircle2 className="h-3.5 w-3.5" />
+                          <CheckCircle2 className="h-3 w-3" />
                           <span>In Stock</span>
                         </>
                       ) : (
                         <>
-                          <XCircle className="h-3.5 w-3.5" />
-                          <span>Sold Out</span>
+                          <XCircle className="h-3 w-3" />
+                          <span>Out</span>
                         </>
                       )}
                     </button>
                   </td>
 
                   {/* Featured Toggle */}
-                  <td className="py-4 px-4 text-center">
+                  <td className="py-3 px-4 text-center">
                     <button
                       onClick={() => handleToggleFeatured(phone)}
                       disabled={updatingId === phone.id}
-                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold transition ${
+                      className={`p-1.5 rounded-full transition ${
                         phone.featured
-                          ? "bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
-                          : "bg-zinc-800 text-zinc-500 hover:text-zinc-300"
+                          ? "text-amber-500 bg-amber-500/10 hover:bg-amber-500/20"
+                          : "text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
                       }`}
+                      title={phone.featured ? "Featured on homepage" : "Not featured"}
                     >
                       <Star
-                        className={`h-3.5 w-3.5 ${
-                          phone.featured ? "fill-amber-400 text-amber-400" : ""
+                        className={`h-4 w-4 ${
+                          phone.featured ? "fill-amber-500" : ""
                         }`}
                       />
-                      <span>{phone.featured ? "Featured" : "Standard"}</span>
                     </button>
                   </td>
 
                   {/* Actions */}
-                  <td className="py-4 px-6 text-right">
-                    <div className="flex items-center justify-end gap-2">
+                  <td className="py-3 px-4 text-right">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <Link
+                        href={`/phones/${phone.slug}`}
+                        target="_blank"
+                        className="p-1.5 rounded-full text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition"
+                        title="Preview Public Page"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </Link>
+
                       <Link
                         href={`/admin/phones/${phone.id}/edit`}
-                        className="rounded-lg border border-white/10 bg-zinc-900 p-2 text-zinc-300 hover:bg-zinc-800 hover:text-white transition"
+                        className="p-1.5 rounded-full text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition"
                         title="Full Edit"
                       >
                         <Edit2 className="h-3.5 w-3.5" />
@@ -422,7 +413,7 @@ export default function AdminInventoryClient({
 
                       <button
                         onClick={() => setDeletingPhone(phone)}
-                        className="rounded-lg border border-rose-500/20 bg-rose-950/20 p-2 text-rose-400 hover:bg-rose-900/40 transition"
+                        className="p-1.5 rounded-full text-rose-500 hover:bg-rose-500/10 transition"
                         title="Delete Device"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -436,78 +427,78 @@ export default function AdminInventoryClient({
         </div>
 
         {filteredPhones.length === 0 && (
-          <div className="p-12 text-center text-zinc-500 space-y-4">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-900 text-zinc-400 border border-white/5">
-              <PlusCircle className="h-7 w-7 text-blue-400" />
-            </div>
-            <div>
-              <p className="text-base font-bold text-white">Your Inventory is Empty</p>
-              <p className="text-xs text-zinc-400 mt-1 max-w-sm mx-auto">
-                No products are currently published. Click below to add your first smartphone, laptop, or gadget listing.
-              </p>
-            </div>
-            <Link
-              href="/admin/phones/new"
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-blue-500 shadow-md shadow-blue-900/30"
+          <div className="py-16 text-center text-[#86868b]">
+            <p className="text-sm">No devices matched your filter criteria.</p>
+            <button
+              onClick={() => {
+                setSearch("");
+                setCategoryFilter("All");
+                setBrandFilter("All");
+                setStatusFilter("All");
+              }}
+              className="mt-3 text-xs font-semibold text-[#1d1d1f] dark:text-white hover:underline"
             >
-              <PlusCircle className="h-4 w-4" />
-              <span>Add Your First Product</span>
-            </Link>
+              Reset Filters
+            </button>
           </div>
         )}
       </div>
 
-      {/* Quick Edit Price Note Modal */}
+      {/* Quick Price Edit Modal */}
       {editingPricePhone && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-3xl border border-white/10 bg-zinc-950 p-6 shadow-2xl">
-            <div className="flex items-center justify-between pb-4 border-b border-white/10">
-              <div className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5 text-blue-400" />
-                <h3 className="font-bold text-white text-base">
-                  Update Price Note
-                </h3>
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md apple-card p-6 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/10">
+              <h3 className="text-sm font-bold text-[#1d1d1f] dark:text-white">
+                Edit Daily Price Note
+              </h3>
               <button
                 onClick={() => setEditingPricePhone(null)}
-                className="text-zinc-500 hover:text-white"
+                className="text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSavePrice} className="space-y-4 pt-4">
+            <form onSubmit={handleSavePrice} className="mt-4 space-y-4">
               <div>
-                <p className="text-xs text-zinc-400 mb-1 font-semibold">
-                  {editingPricePhone.name} ({editingPricePhone.storage})
+                <p className="text-xs font-semibold text-[#1d1d1f] dark:text-white">
+                  {editingPricePhone.name}
                 </p>
-                <label className="block text-xs text-zinc-400 mb-1.5">
-                  Daily Price Note / Estimated Price
+                <p className="text-[11px] text-[#86868b]">
+                  {editingPricePhone.storage} • {editingPricePhone.condition}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-[#86868b] mb-1.5">
+                  Today&apos;s Price Note
                 </label>
                 <input
                   type="text"
                   required
+                  autoFocus
                   value={newPriceNote}
                   onChange={(e) => setNewPriceNote(e.target.value)}
-                  placeholder="e.g. ₦1,250,000 or Price on daily request"
-                  className="w-full rounded-xl border border-white/10 bg-zinc-900 px-4 py-2.5 text-xs text-white outline-none focus:border-blue-500"
+                  placeholder="e.g. ₦1,450,000 promo today or Price on WhatsApp"
+                  className="w-full rounded-xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#1d1d1f] dark:text-white outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setEditingPricePhone(null)}
-                  className="rounded-xl border border-white/10 bg-zinc-900 px-4 py-2 text-xs font-semibold text-zinc-300 hover:bg-zinc-800"
+                  className="apple-button-secondary text-xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={priceSaveLoading}
-                  className="rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-500 shadow-md shadow-blue-900/30"
+                  className="apple-button-primary text-xs"
                 >
-                  {priceSaveLoading ? "Saving..." : "Save Changes"}
+                  {priceSaveLoading ? "Saving..." : "Save Daily Price"}
                 </button>
               </div>
             </form>
@@ -517,22 +508,28 @@ export default function AdminInventoryClient({
 
       {/* Delete Confirmation Modal */}
       {deletingPhone && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm rounded-3xl border border-white/10 bg-zinc-950 p-6 shadow-2xl text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500/20 text-rose-400 mb-4">
-              <AlertTriangle className="h-6 w-6" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md apple-card p-6 shadow-2xl">
+            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3">
+              <div className="h-10 w-10 rounded-full bg-rose-500/10 flex items-center justify-center">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+              <h3 className="text-sm font-bold text-[#1d1d1f] dark:text-white">
+                Delete Device from Inventory?
+              </h3>
             </div>
 
-            <h3 className="font-bold text-white text-lg">Remove Device?</h3>
-            <p className="text-xs text-zinc-400 mt-2">
-              Are you sure you want to remove <strong className="text-white">{deletingPhone.name}</strong> from the catalog? This action will immediately remove it from public view.
+            <p className="text-xs text-[#86868b] leading-relaxed">
+              Are you sure you want to permanently delete{" "}
+              <strong className="text-[#1d1d1f] dark:text-white">{deletingPhone.name}</strong>? This action cannot be undone.
             </p>
 
-            <div className="flex items-center justify-center gap-3 mt-6">
+            <div className="mt-6 flex items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setDeletingPhone(null)}
-                className="rounded-xl border border-white/10 bg-zinc-900 px-4 py-2 text-xs font-semibold text-zinc-300 hover:bg-zinc-800"
+                disabled={deleteLoading}
+                className="apple-button-secondary text-xs"
               >
                 Cancel
               </button>
@@ -540,9 +537,9 @@ export default function AdminInventoryClient({
                 type="button"
                 onClick={handleConfirmDelete}
                 disabled={deleteLoading}
-                className="rounded-xl bg-rose-600 px-4 py-2 text-xs font-semibold text-white hover:bg-rose-500 shadow-md shadow-rose-950/40"
+                className="rounded-full bg-rose-600 px-5 py-2 text-xs font-semibold text-white hover:bg-rose-500 transition"
               >
-                {deleteLoading ? "Removing..." : "Yes, Remove"}
+                {deleteLoading ? "Deleting..." : "Permanently Delete"}
               </button>
             </div>
           </div>

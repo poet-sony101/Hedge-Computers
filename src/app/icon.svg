@@ -1,22 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
   <defs>
-    <linearGradient id="newDawnGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#2563eb" />
-      <stop offset="100%" stop-color="#38bdf8" />
+    <!-- Apple Titanium / Silver Metallic Sheen -->
+    <linearGradient id="appleTitanium" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a2a2e" />
+      <stop offset="40%" stop-color="#1c1c1f" />
+      <stop offset="100%" stop-color="#0a0a0c" />
+    </linearGradient>
+    <linearGradient id="silverSheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="50%" stop-color="#d4d4d8" />
+      <stop offset="100%" stop-color="#a1a1aa" />
+    </linearGradient>
+    <linearGradient id="rimGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#71717a" stop-opacity="0.1" />
     </linearGradient>
   </defs>
-  <!-- Rounded Base Badge -->
-  <rect width="32" height="32" rx="9" fill="url(#newDawnGrad)" />
-  
-  <!-- Subtle inner gloss border -->
-  <rect x="0.5" y="0.5" width="31" height="31" rx="8.5" stroke="white" stroke-opacity="0.25" />
 
-  <!-- Centered White Lucide Sparkles Graphic -->
-  <g transform="translate(4, 4) scale(1.0)" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="white">
-    <!-- Main Center Star -->
-    <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
-    <!-- Secondary Mini Star -->
-    <path d="M20 3v4M22 5h-4" stroke-width="2" fill="none" />
-    <path d="M4 17v2M5 18H3" stroke-width="1.5" fill="none" />
+  <!-- Apple Squircle Base -->
+  <rect width="32" height="32" rx="8" fill="url(#appleTitanium)" />
+  
+  <!-- Precision Machined Rim -->
+  <rect x="0.5" y="0.5" width="31" height="31" rx="7.5" stroke="url(#rimGlow)" stroke-width="1" />
+
+  <!-- Available Tech "A" Monogram / Minimalist Apex -->
+  <g transform="translate(16, 16)">
+    <!-- Sleek Precision Geometric "A" -->
+    <path
+      d="M0 -7.5L5.8 6.5H2.6L1.3 3.2H-1.3L-2.6 6.5H-5.8L0 -7.5ZM0 -2.4L-0.9 0.9H0.9L0 -2.4Z"
+      fill="url(#silverSheen)"
+    />
+    <!-- Subtle Apple-like Dot Indicator -->
+    <circle cx="6.5" cy="-5" r="1.2" fill="#ffffff" opacity="0.9" />
   </g>
 </svg>

@@ -3,9 +3,9 @@ import Footer from "@/components/layout/Footer";
 import RequestPhoneClient from "./RequestPhoneClient";
 
 export const metadata = {
-  title: "Request a Phone | New Dawn Technologies",
+  title: "Request a Device | Available Tech",
   description:
-    "Can't find the smartphone you're looking for in our catalog? Submit a custom request and let New Dawn Technologies source it for you at today's best price.",
+    "Can't find the smartphone, MacBook, or workstation you're looking for? Submit a custom request and let Available Tech source it for you at today's best price.",
 };
 
 export default function RequestPage() {

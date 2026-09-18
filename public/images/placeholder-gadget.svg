@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="watchCase" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3a3a3c"/>
+      <stop offset="50%" stop-color="#242426"/>
+      <stop offset="100%" stop-color="#1c1c1e"/>
+    </linearGradient>
+    <linearGradient id="titaniumRim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#98989d"/>
+      <stop offset="50%" stop-color="#636366"/>
+      <stop offset="100%" stop-color="#3a3a3c"/>
+    </linearGradient>
+    <linearGradient id="bandGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2c2c2e"/>
+      <stop offset="100%" stop-color="#18181a"/>
+    </linearGradient>
+  </defs>
+
+  <ellipse cx="200" cy="355" rx="70" ry="10" fill="#000000" opacity="0.4" filter="blur(6px)"/>
+
+  <!-- Top Band -->
+  <rect x="155" y="40" width="90" height="70" rx="16" fill="url(#bandGrad)" stroke="#48484a" stroke-width="1.5"/>
+
+  <!-- Bottom Band -->
+  <rect x="155" y="290" width="90" height="70" rx="16" fill="url(#bandGrad)" stroke="#48484a" stroke-width="1.5"/>
+
+  <!-- Watch Body Chassis -->
+  <rect x="130" y="100" width="140" height="195" rx="36" fill="url(#watchCase)" stroke="url(#titaniumRim)" stroke-width="3"/>
+
+  <!-- Digital Crown -->
+  <rect x="272" y="135" width="10" height="34" rx="4" fill="#636366" stroke="#8e8e93" stroke-width="1"/>
+  <!-- Side Button -->
+  <rect x="272" y="185" width="6" height="42" rx="3" fill="#48484a"/>
+
+  <!-- Display Face -->
+  <rect x="138" y="108" width="124" height="179" rx="28" fill="#000000"/>
+
+  <!-- Clock Dial & Monogram -->
+  <g transform="translate(200, 197)">
+    <circle cx="0" cy="0" r="44" stroke="#2c2c2e" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <path d="M-8 10 L0 -10 L8 10" stroke="#f5f5f7" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="-5" y1="2" x2="5" y2="2" stroke="#86868b" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="2.5" fill="#f5f5f7"/>
+  </g>
+</svg>

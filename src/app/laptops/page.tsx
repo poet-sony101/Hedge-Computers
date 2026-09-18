@@ -5,9 +5,9 @@ import LaptopCatalogClient from "./LaptopCatalogClient";
 import { getAllPhones } from "@/services/phoneService";
 
 export const metadata = {
-  title: "Browse Laptops & MacBooks | New Dawn Technologies",
+  title: "Browse Laptops & MacBooks | Available Tech",
   description:
-    "Explore genuine Apple MacBooks, Dell XPS, HP Spectre, and Lenovo ThinkPads. Inquire for today's market price directly on WhatsApp.",
+    "Explore verified Apple MacBooks, Dell XPS, HP Spectre, and Lenovo ThinkPads. Inquire for today's market price directly on WhatsApp.",
 };
 
 export const dynamic = "force-dynamic";

@@ -11,8 +11,7 @@ import {
   Laptop,
   Watch,
   Zap,
-  Cpu,
-  Sparkles,
+  Loader2,
 } from "lucide-react";
 import { PhoneCondition, DeviceCategory } from "@/types/phone";
 import ImageUploader from "@/components/admin/ImageUploader";
@@ -160,11 +159,17 @@ export default function NewPhoneClient() {
     setLoading(true);
 
     try {
-      if (!formData.image) {
-        setError("Please choose or upload a main picture for this device.");
-        setLoading(false);
-        return;
-      }
+      // Determine image to use: uploaded image OR fallback category silhouette
+      const defaultPlaceholder =
+        formData.category === "laptop"
+          ? "/images/placeholder-laptop.svg"
+          : formData.category === "gadget"
+          ? "/images/placeholder-gadget.svg"
+          : formData.category === "accessory"
+          ? "/images/placeholder-accessory.svg"
+          : "/images/placeholder-phone.svg";
+
+      const finalImage = formData.image || defaultPlaceholder;
 
       const storageArr = formData.storageOptions
         .split(",")
@@ -177,16 +182,16 @@ export default function NewPhoneClient() {
         .filter(Boolean);
 
       const payload = {
-        name: formData.name,
-        slug: formData.slug,
+        name: formData.name.trim(),
+        slug: formData.slug.trim(),
         category: formData.category,
         brand: formData.brand,
         condition: formData.condition,
         storage: formData.storage,
         storageOptions: storageArr.length > 0 ? storageArr : [formData.storage],
         colors: colorsArr,
-        image: formData.image,
-        images: [formData.image, ...galleryImages].filter(Boolean),
+        image: finalImage,
+        images: [finalImage, ...galleryImages].filter(Boolean),
         priceNote: formData.priceNote,
         inStock: formData.inStock,
         featured: formData.featured,
@@ -215,8 +220,12 @@ export default function NewPhoneClient() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Failed to add device listing");
+        const errorMsg = data.error || "Failed to add device listing";
+        setError(errorMsg);
         setLoading(false);
+        if (typeof window !== "undefined") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
         return;
       }
 
@@ -225,6 +234,9 @@ export default function NewPhoneClient() {
     } catch {
       setError("An unexpected error occurred while saving the device.");
       setLoading(false);
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
   };
 
@@ -243,7 +255,7 @@ export default function NewPhoneClient() {
       <div>
         <Link
           href="/admin/phones"
-          className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition"
+          className="inline-flex items-center gap-1.5 text-xs text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white transition"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           <span>Back to Inventory</span>
@@ -252,38 +264,38 @@ export default function NewPhoneClient() {
 
       <div className="flex items-center justify-between">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-blue-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#86868b]">
             Catalog Expansion
           </span>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white mt-1">
+          <h1 className="text-3xl font-extrabold tracking-tight text-[#1d1d1f] dark:text-white mt-1">
             Add New {categoryLabel}
           </h1>
-          <p className="text-xs text-zinc-400 mt-1">
-            Create a new {categoryLabel.toLowerCase()} listing to appear in the public catalog and search.
+          <p className="text-xs text-[#86868b] mt-1">
+            Publish a new {categoryLabel.toLowerCase()} listing to the Available Tech catalog.
           </p>
         </div>
       </div>
 
       {error && (
-        <div className="flex items-center gap-3 rounded-2xl border border-rose-500/30 bg-rose-950/30 p-4 text-xs text-rose-400">
+        <div className="flex items-center gap-3 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs text-rose-600 dark:text-rose-400">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Category Toggle Banner */}
-      <div className="rounded-3xl border border-white/10 bg-zinc-950/60 p-6 backdrop-blur-xl">
-        <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3">
+      <div className="apple-card p-6 shadow-sm">
+        <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b] mb-3">
           Select Device Category
         </label>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-2xl">
           <button
             type="button"
             onClick={() => handleCategoryChange("phone")}
             className={`flex items-center justify-center gap-2 rounded-2xl p-3.5 text-xs font-bold transition-all ${
               formData.category === "phone"
-                ? "bg-purple-600 text-white shadow-lg shadow-purple-900/40"
-                : "border border-white/10 bg-zinc-900/80 text-zinc-400 hover:text-white"
+                ? "bg-[#1d1d1f] dark:bg-white text-white dark:text-black shadow-md shadow-black/10"
+                : "border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white"
             }`}
           >
             <Smartphone className="h-4 w-4" />
@@ -295,8 +307,8 @@ export default function NewPhoneClient() {
             onClick={() => handleCategoryChange("laptop")}
             className={`flex items-center justify-center gap-2 rounded-2xl p-3.5 text-xs font-bold transition-all ${
               formData.category === "laptop"
-                ? "bg-sky-600 text-white shadow-lg shadow-sky-900/40"
-                : "border border-white/10 bg-zinc-900/80 text-zinc-400 hover:text-white"
+                ? "bg-[#1d1d1f] dark:bg-white text-white dark:text-black shadow-md shadow-black/10"
+                : "border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white"
             }`}
           >
             <Laptop className="h-4 w-4" />
@@ -308,8 +320,8 @@ export default function NewPhoneClient() {
             onClick={() => handleCategoryChange("gadget")}
             className={`flex items-center justify-center gap-2 rounded-2xl p-3.5 text-xs font-bold transition-all ${
               formData.category === "gadget"
-                ? "bg-emerald-600 text-white shadow-lg shadow-emerald-900/40"
-                : "border border-white/10 bg-zinc-900/80 text-zinc-400 hover:text-white"
+                ? "bg-[#1d1d1f] dark:bg-white text-white dark:text-black shadow-md shadow-black/10"
+                : "border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white"
             }`}
           >
             <Watch className="h-4 w-4" />
@@ -321,8 +333,8 @@ export default function NewPhoneClient() {
             onClick={() => handleCategoryChange("accessory")}
             className={`flex items-center justify-center gap-2 rounded-2xl p-3.5 text-xs font-bold transition-all ${
               formData.category === "accessory"
-                ? "bg-amber-600 text-white shadow-lg shadow-amber-900/40"
-                : "border border-white/10 bg-zinc-900/80 text-zinc-400 hover:text-white"
+                ? "bg-[#1d1d1f] dark:bg-white text-white dark:text-black shadow-md shadow-black/10"
+                : "border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white"
             }`}
           >
             <Zap className="h-4 w-4" />
@@ -331,27 +343,27 @@ export default function NewPhoneClient() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* Section 1: Basic Information */}
-        <div className="rounded-3xl border border-white/10 bg-zinc-950/60 p-6 sm:p-8 backdrop-blur-xl space-y-5">
-          <div className="flex items-center gap-2 pb-3 border-b border-white/10">
+        <div className="apple-card p-6 sm:p-8 shadow-sm space-y-5">
+          <div className="flex items-center gap-2 pb-3 border-b border-black/5 dark:border-white/10">
             {formData.category === "laptop" ? (
-              <Laptop className="h-4 w-4 text-sky-400" />
+              <Laptop className="h-4 w-4 text-[#1d1d1f] dark:text-white" />
             ) : formData.category === "gadget" ? (
-              <Watch className="h-4 w-4 text-emerald-400" />
+              <Watch className="h-4 w-4 text-[#1d1d1f] dark:text-white" />
             ) : formData.category === "accessory" ? (
-              <Zap className="h-4 w-4 text-amber-400" />
+              <Zap className="h-4 w-4 text-[#1d1d1f] dark:text-white" />
             ) : (
-              <Smartphone className="h-4 w-4 text-purple-400" />
+              <Smartphone className="h-4 w-4 text-[#1d1d1f] dark:text-white" />
             )}
-            <h2 className="text-sm font-bold uppercase tracking-wider text-white">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[#1d1d1f] dark:text-white">
               1. Device Identity
             </h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b] mb-2">
                 {categoryLabel} Name *
               </label>
               <input
@@ -368,12 +380,12 @@ export default function NewPhoneClient() {
                     ? "e.g. Anker MagGo Qi2 Power Bank"
                     : "e.g. iPhone 16 Pro Max"
                 }
-                className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-4 py-2.5 text-xs text-white outline-none focus:border-blue-500"
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-4 py-3 text-sm text-[#1d1d1f] dark:text-white outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b] mb-2">
                 URL Slug *
               </label>
               <input
@@ -383,15 +395,15 @@ export default function NewPhoneClient() {
                 onChange={(e) =>
                   setFormData({ ...formData, slug: e.target.value })
                 }
-                placeholder="macbook-pro-16-m3-max"
-                className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-4 py-2.5 text-xs text-zinc-300 font-mono outline-none focus:border-blue-500"
+                placeholder="iphone-16-pro-max"
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-4 py-3 text-sm text-[#1d1d1f] dark:text-white font-mono outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b] mb-2">
                 Brand *
               </label>
               <select
@@ -399,10 +411,10 @@ export default function NewPhoneClient() {
                 onChange={(e) =>
                   setFormData({ ...formData, brand: e.target.value })
                 }
-                className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-4 py-2.5 text-xs text-white outline-none focus:border-blue-500"
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-4 py-3 text-sm text-[#1d1d1f] dark:text-white outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
               >
                 {brandOptions.map((b) => (
-                  <option key={b} value={b} className="bg-zinc-900">
+                  <option key={b} value={b} className="bg-white dark:bg-zinc-900 text-[#1d1d1f] dark:text-white">
                     {b}
                   </option>
                 ))}
@@ -410,7 +422,7 @@ export default function NewPhoneClient() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b] mb-2">
                 Condition *
               </label>
               <select
@@ -421,16 +433,16 @@ export default function NewPhoneClient() {
                     condition: e.target.value as PhoneCondition,
                   })
                 }
-                className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-4 py-2.5 text-xs text-white outline-none focus:border-blue-500"
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-4 py-3 text-sm text-[#1d1d1f] dark:text-white outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
               >
-                <option value="UK Used" className="bg-zinc-900">UK Used (Clean / Tested)</option>
-                <option value="Brand New" className="bg-zinc-900">Brand New (Sealed)</option>
-                <option value="Open Box" className="bg-zinc-900">Open Box</option>
+                <option value="UK Used" className="bg-white dark:bg-zinc-900">UK Used (Clean / Tested)</option>
+                <option value="Brand New" className="bg-white dark:bg-zinc-900">Brand New (Sealed)</option>
+                <option value="Open Box" className="bg-white dark:bg-zinc-900">Open Box</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b] mb-2">
                 Base Storage / SSD *
               </label>
               <input
@@ -441,15 +453,15 @@ export default function NewPhoneClient() {
                   setFormData({ ...formData, storage: e.target.value })
                 }
                 placeholder={isLaptop ? "512GB SSD" : "256GB"}
-                className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-4 py-2.5 text-xs text-white outline-none focus:border-blue-500"
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-4 py-3 text-sm text-[#1d1d1f] dark:text-white outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                Storage Options (Comma Separated)
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b] mb-2">
+                Storage Options (comma-separated)
               </label>
               <input
                 type="text"
@@ -457,14 +469,14 @@ export default function NewPhoneClient() {
                 onChange={(e) =>
                   setFormData({ ...formData, storageOptions: e.target.value })
                 }
-                placeholder={isLaptop ? "512GB SSD, 1TB SSD, 2TB SSD" : "128GB, 256GB, 512GB"}
-                className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-4 py-2.5 text-xs text-white outline-none focus:border-blue-500"
+                placeholder="128GB, 256GB, 512GB, 1TB"
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-4 py-3 text-sm text-[#1d1d1f] dark:text-white outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                Colorways (Comma Separated)
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b] mb-2">
+                Available Colors (comma-separated)
               </label>
               <input
                 type="text"
@@ -472,212 +484,218 @@ export default function NewPhoneClient() {
                 onChange={(e) =>
                   setFormData({ ...formData, colors: e.target.value })
                 }
-                placeholder={isLaptop ? "Space Black, Silver, Midnight" : "Titanium Black, White, Natural Titanium"}
-                className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-4 py-2.5 text-xs text-white outline-none focus:border-blue-500"
+                placeholder="Space Black, Silver, Natural Titanium"
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-4 py-3 text-sm text-[#1d1d1f] dark:text-white outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
               />
             </div>
           </div>
         </div>
 
-        {/* Section 2: Pricing & Placement */}
-        <div className="rounded-3xl border border-white/10 bg-zinc-950/60 p-6 sm:p-8 backdrop-blur-xl space-y-5">
-          <div className="flex items-center gap-2 pb-3 border-b border-white/10">
-            <Sparkles className="h-4 w-4 text-emerald-400" />
-            <h2 className="text-sm font-bold uppercase tracking-wider text-white">
-              2. Daily Price Note & Availability
+        {/* Section 2: Pricing & Availability */}
+        <div className="apple-card p-6 sm:p-8 shadow-sm space-y-5">
+          <div className="flex items-center gap-2 pb-3 border-b border-black/5 dark:border-white/10">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[#1d1d1f] dark:text-white">
+              2. Pricing Policy & Stock Status
             </h2>
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-              Price Note / Today&apos;s Rate
-            </label>
-            <input
-              type="text"
-              value={formData.priceNote}
-              onChange={(e) =>
-                setFormData({ ...formData, priceNote: e.target.value })
-              }
-              placeholder="e.g. Price on daily request (market rate) or ₦1,850,000"
-              className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-4 py-2.5 text-xs text-white outline-none focus:border-blue-500"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b] mb-2">
+                Today&apos;s Price Note *
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.priceNote}
+                onChange={(e) =>
+                  setFormData({ ...formData, priceNote: e.target.value })
+                }
+                placeholder="Price on daily request (market rate)"
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-4 py-3 text-sm text-[#1d1d1f] dark:text-white outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
+              />
+              <p className="mt-1 text-[11px] text-[#86868b]">
+                e.g. &apos;Price on daily request&apos; or &apos;₦1,550,000 promo today&apos;
+              </p>
+            </div>
+
+            <div className="flex items-center gap-6 pt-5">
+              <label className="flex items-center gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.inStock}
+                  onChange={(e) =>
+                    setFormData({ ...formData, inStock: e.target.checked })
+                  }
+                  className="h-4 w-4 rounded text-[#1d1d1f] focus:ring-black"
+                />
+                <span className="text-xs font-semibold text-[#1d1d1f] dark:text-white">
+                  In Stock & Ready to Ship
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.featured}
+                  onChange={(e) =>
+                    setFormData({ ...formData, featured: e.target.checked })
+                  }
+                  className="h-4 w-4 rounded text-amber-500 focus:ring-amber-500"
+                />
+                <span className="text-xs font-semibold text-[#1d1d1f] dark:text-white">
+                  Featured on Homepage
+                </span>
+              </label>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-6 pt-2">
-            <label className="flex items-center gap-3 cursor-pointer">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b] mb-2">
+                Catchy Tagline (Optional)
+              </label>
               <input
-                type="checkbox"
-                checked={formData.inStock}
+                type="text"
+                value={formData.tagline}
                 onChange={(e) =>
-                  setFormData({ ...formData, inStock: e.target.checked })
+                  setFormData({ ...formData, tagline: e.target.value })
                 }
-                className="h-4 w-4 rounded accent-blue-600"
+                placeholder="Titanium. So strong. So light. So Pro."
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-4 py-3 text-sm text-[#1d1d1f] dark:text-white outline-none focus:border-[#1d1d1f] dark:focus:border-white transition"
               />
-              <span className="text-xs font-semibold text-white">
-                In Stock & Available Immediately
-              </span>
-            </label>
+            </div>
 
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.featured}
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b] mb-2">
+                Overview / Sales Note (Optional)
+              </label>
+              <textarea
+                rows={2}
+                value={formData.overview}
                 onChange={(e) =>
-                  setFormData({ ...formData, featured: e.target.checked })
+                  setFormData({ ...formData, overview: e.target.value })
                 }
-                className="h-4 w-4 rounded accent-amber-500"
+                placeholder="Brief summary of highlights, battery health, or grade A condition..."
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-4 py-2.5 text-sm text-[#1d1d1f] dark:text-white outline-none focus:border-[#1d1d1f] dark:focus:border-white resize-none transition"
               />
-              <span className="text-xs font-semibold text-white">
-                Feature on Homepage Spotlight
-              </span>
-            </label>
+            </div>
           </div>
         </div>
 
-        {/* Section 3: Tech Specs & Overview */}
-        <div className="rounded-3xl border border-white/10 bg-zinc-950/60 p-6 sm:p-8 backdrop-blur-xl space-y-5">
-          <div className="flex items-center gap-2 pb-3 border-b border-white/10">
-            <Cpu className="h-4 w-4 text-sky-400" />
-            <h2 className="text-sm font-bold uppercase tracking-wider text-white">
-              3. Specifications
+        {/* Section 3: Specs Matrix */}
+        <div className="apple-card p-6 sm:p-8 shadow-sm space-y-5">
+          <div className="flex items-center gap-2 pb-3 border-b border-black/5 dark:border-white/10">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[#1d1d1f] dark:text-white">
+              3. Specifications Matrix
             </h2>
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-              Marketing Tagline
-            </label>
-            <input
-              type="text"
-              value={formData.tagline}
-              onChange={(e) =>
-                setFormData({ ...formData, tagline: e.target.value })
-              }
-              placeholder={isLaptop ? "e.g. Scary fast M3 Max chip with 120Hz Liquid Retina XDR." : "e.g. Forged in titanium with next-gen power."}
-              className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-4 py-2.5 text-xs text-white outline-none focus:border-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-              Device Overview
-            </label>
-            <textarea
-              rows={2}
-              value={formData.overview}
-              onChange={(e) =>
-                setFormData({ ...formData, overview: e.target.value })
-              }
-              placeholder="Short description highlighting key capabilities..."
-              className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-4 py-2.5 text-xs text-white outline-none focus:border-blue-500 resize-none"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <div>
-              <label className="block text-xs text-zinc-400 mb-1">Display & Screen</label>
+              <label className="block text-xs text-[#86868b] mb-1">Display & Screen</label>
               <input
                 type="text"
                 value={formData.display}
                 onChange={(e) =>
                   setFormData({ ...formData, display: e.target.value })
                 }
-                placeholder={isLaptop ? 'e.g. 14.2" Liquid Retina XDR, 120Hz ProMotion' : 'e.g. 6.7" OLED, 120Hz'}
-                className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-3 py-2 text-xs text-white outline-none"
+                placeholder={isLaptop ? '14.2" Liquid Retina XDR, 120Hz' : '6.7" OLED, 120Hz Super Retina'}
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#1d1d1f] dark:text-white outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs text-zinc-400 mb-1">Processor / CPU</label>
+              <label className="block text-xs text-[#86868b] mb-1">Processor / CPU</label>
               <input
                 type="text"
                 value={formData.processor}
                 onChange={(e) =>
                   setFormData({ ...formData, processor: e.target.value })
                 }
-                placeholder={isLaptop ? "e.g. Apple M3 Pro / Intel Core i7 13700H" : "e.g. Apple A18 Pro / Snapdragon 8 Elite"}
-                className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-3 py-2 text-xs text-white outline-none"
+                placeholder={isLaptop ? "Apple M3 Pro / Intel Core i7" : "Apple A18 Pro / Snapdragon 8 Elite"}
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#1d1d1f] dark:text-white outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs text-zinc-400 mb-1">RAM Memory</label>
+              <label className="block text-xs text-[#86868b] mb-1">RAM Memory</label>
               <input
                 type="text"
                 value={formData.ram}
                 onChange={(e) =>
                   setFormData({ ...formData, ram: e.target.value })
                 }
-                placeholder={isLaptop ? "e.g. 18GB Unified / 32GB DDR5" : "e.g. 8GB / 12GB"}
-                className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-3 py-2 text-xs text-white outline-none"
+                placeholder={isLaptop ? "18GB Unified / 32GB RAM" : "8GB / 12GB RAM"}
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#1d1d1f] dark:text-white outline-none"
               />
             </div>
 
             {isLaptop ? (
               <div>
-                <label className="block text-xs text-zinc-400 mb-1">Graphics / GPU</label>
+                <label className="block text-xs text-[#86868b] mb-1">Graphics / GPU</label>
                 <input
                   type="text"
                   value={formData.gpu}
                   onChange={(e) =>
                     setFormData({ ...formData, gpu: e.target.value })
                   }
-                  placeholder="e.g. NVIDIA RTX 4060 8GB / Apple 14-Core GPU"
-                  className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-3 py-2 text-xs text-white outline-none"
+                  placeholder="NVIDIA RTX 4060 8GB / Apple 14-Core GPU"
+                  className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#1d1d1f] dark:text-white outline-none"
                 />
               </div>
             ) : (
               <div>
-                <label className="block text-xs text-zinc-400 mb-1">Camera Setup</label>
+                <label className="block text-xs text-[#86868b] mb-1">Camera Setup</label>
                 <input
                   type="text"
                   value={formData.camera}
                   onChange={(e) =>
                     setFormData({ ...formData, camera: e.target.value })
                   }
-                  placeholder="e.g. 48MP Main + 12MP Ultra-wide + 12MP 5x"
-                  className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-3 py-2 text-xs text-white outline-none"
+                  placeholder="48MP Main + 12MP Ultra-wide + 12MP 5x"
+                  className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#1d1d1f] dark:text-white outline-none"
                 />
               </div>
             )}
 
             <div>
-              <label className="block text-xs text-zinc-400 mb-1">Battery & Health</label>
+              <label className="block text-xs text-[#86868b] mb-1">Battery & Health</label>
               <input
                 type="text"
                 value={formData.battery}
                 onChange={(e) =>
                   setFormData({ ...formData, battery: e.target.value })
                 }
-                placeholder={isLaptop ? "e.g. 70Whr, 96% battery health verified" : "e.g. 4685 mAh, All-day life"}
-                className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-3 py-2 text-xs text-white outline-none"
+                placeholder={isLaptop ? "70Whr, 96% battery health" : "4685 mAh, All-day life"}
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#1d1d1f] dark:text-white outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs text-zinc-400 mb-1">Operating System</label>
+              <label className="block text-xs text-[#86868b] mb-1">Operating System</label>
               <input
                 type="text"
                 value={formData.os}
                 onChange={(e) =>
                   setFormData({ ...formData, os: e.target.value })
                 }
-                placeholder={isLaptop ? "e.g. macOS Sonoma / Windows 11 Pro" : "e.g. iOS 18 / Android 15"}
-                className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-3 py-2 text-xs text-white outline-none"
+                placeholder={isLaptop ? "macOS Sonoma / Windows 11 Pro" : "iOS 18 / Android 15"}
+                className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#1d1d1f] dark:text-white outline-none"
               />
             </div>
 
             {isLaptop && (
-              <div className="sm:col-span-2">
-                <label className="block text-xs text-zinc-400 mb-1">I/O Ports</label>
+              <div className="sm:col-span-3">
+                <label className="block text-xs text-[#86868b] mb-1">I/O Ports</label>
                 <input
                   type="text"
                   value={formData.ports}
                   onChange={(e) =>
                     setFormData({ ...formData, ports: e.target.value })
                   }
-                  placeholder="e.g. 3x Thunderbolt 4, HDMI, SDXC, MagSafe 3"
-                  className="w-full rounded-xl border border-white/10 bg-zinc-900/80 px-3 py-2 text-xs text-white outline-none"
+                  placeholder="3x Thunderbolt 4, HDMI, SDXC, MagSafe 3"
+                  className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#1d1d1f] dark:text-white outline-none"
                 />
               </div>
             )}
@@ -685,9 +703,9 @@ export default function NewPhoneClient() {
         </div>
 
         {/* Section 4: Image */}
-        <div className="rounded-3xl border border-white/10 bg-zinc-950/60 p-6 sm:p-8 backdrop-blur-xl space-y-5">
-          <div className="flex items-center gap-2 pb-3 border-b border-white/10">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-white">
+        <div className="apple-card p-6 sm:p-8 shadow-sm space-y-5">
+          <div className="flex items-center gap-2 pb-3 border-b border-black/5 dark:border-white/10">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[#1d1d1f] dark:text-white">
               4. Product Pictures & Media
             </h2>
           </div>
@@ -695,6 +713,7 @@ export default function NewPhoneClient() {
           <ImageUploader
             primaryImage={formData.image}
             galleryImages={galleryImages}
+            category={formData.category}
             onPrimaryChange={(url) =>
               setFormData((prev) => ({ ...prev, image: url }))
             }
@@ -702,11 +721,19 @@ export default function NewPhoneClient() {
           />
         </div>
 
+        {/* Bottom Error Notification Banner (Right above submit button) */}
+        {error && (
+          <div className="flex items-center gap-3 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs text-rose-600 dark:text-rose-400">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
         {/* Submit Action */}
-        <div className="flex items-center justify-end gap-4 pt-4">
+        <div className="flex items-center justify-end gap-3 pt-4">
           <Link
             href="/admin/phones"
-            className="rounded-xl border border-white/10 bg-zinc-900 px-6 py-3 text-xs font-semibold text-zinc-300 hover:bg-zinc-800"
+            className="apple-button-secondary text-xs"
           >
             Cancel
           </Link>
@@ -714,10 +741,19 @@ export default function NewPhoneClient() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3 text-xs font-semibold text-white hover:bg-blue-500 shadow-lg shadow-blue-900/40 transition"
+            className="inline-flex items-center gap-2 rounded-full bg-[#1d1d1f] hover:bg-black dark:bg-white dark:hover:bg-[#f5f5f7] px-8 py-3.5 text-xs font-semibold text-white dark:text-black shadow-lg shadow-black/10 transition disabled:opacity-50"
           >
-            <PlusCircle className="h-4 w-4" />
-            <span>{loading ? "Publishing..." : `Publish ${categoryLabel} Listing`}</span>
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Publishing Device...</span>
+              </>
+            ) : (
+              <>
+                <PlusCircle className="h-4 w-4" />
+                <span>Add Device to Catalog</span>
+              </>
+            )}
           </button>
         </div>
       </form>

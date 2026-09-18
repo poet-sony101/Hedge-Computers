@@ -5,9 +5,9 @@ import ProductCatalogClient from "./ProductCatalogClient";
 import { getAllPhones } from "@/services/phoneService";
 
 export const metadata = {
-  title: "Products Catalog | New Dawn Technologies",
+  title: "Products Catalog | Available Tech",
   description:
-    "Explore our complete catalog of phones, laptops, gadgets, and accessories. Inquire for today's market price directly on WhatsApp.",
+    "Explore our complete catalog of smartphones, MacBooks, laptops, gadgets, and accessories. Inquire for today's market price directly on WhatsApp.",
 };
 
 export const dynamic = "force-dynamic";

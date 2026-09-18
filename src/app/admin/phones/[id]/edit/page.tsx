@@ -10,7 +10,7 @@ type EditPhonePageProps = {
 };
 
 export const metadata = {
-  title: "Edit Phone | Admin | New Dawn Technologies",
+  title: "Edit Device | Admin | Available Tech",
 };
 
 export default async function EditPhonePage({ params }: EditPhonePageProps) {

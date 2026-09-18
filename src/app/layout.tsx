@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,9 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "New Dawn Technologies | Premium Tech Catalog & Inquiries",
+  title: "Available Tech | Premium Device Catalog & Daily Inquiries",
   description:
-    "Explore genuine smartphones, MacBooks, laptops, smartwatches, and accessories in Computer Village, Ikeja, Lagos. Request today's best market price directly on WhatsApp.",
+    "Explore verified smartphones, MacBooks, laptops, smartwatches, and accessories in Computer Village, Ikeja, Lagos. Request today's best market price directly on WhatsApp.",
   icons: {
     icon: "/icon.svg",
     shortcut: "/icon.svg",
@@ -33,10 +34,36 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} scroll-smooth`}
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} scroll-smooth dark`}
     >
-      <body className="font-sans antialiased bg-black text-white selection:bg-blue-600 selection:text-white">
-        {children}
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var stored = localStorage.getItem('available_tech_theme');
+                  if (stored === 'light') {
+                    document.documentElement.classList.remove('dark');
+                  } else if (stored === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (prefersDark) {
+                      document.documentElement.classList.add('dark');
+                    } else {
+                      document.documentElement.classList.remove('dark');
+                    }
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="font-sans antialiased bg-[#f5f5f7] dark:bg-black text-[#1d1d1f] dark:text-[#f5f5f7] selection:bg-zinc-800 selection:text-white dark:selection:bg-zinc-200 dark:selection:text-black">
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

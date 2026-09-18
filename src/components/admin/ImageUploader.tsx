@@ -11,11 +11,14 @@ import {
   Loader2,
   Link as LinkIcon,
   AlertCircle,
+  Sparkles,
 } from "lucide-react";
+import { DeviceCategory } from "@/types/phone";
 
 interface ImageUploaderProps {
   primaryImage: string;
   galleryImages?: string[];
+  category?: DeviceCategory;
   onPrimaryChange: (url: string) => void;
   onGalleryChange?: (urls: string[]) => void;
 }
@@ -23,6 +26,7 @@ interface ImageUploaderProps {
 export default function ImageUploader({
   primaryImage,
   galleryImages = [],
+  category = "phone",
   onPrimaryChange,
   onGalleryChange,
 }: ImageUploaderProps) {
@@ -34,6 +38,16 @@ export default function ImageUploader({
 
   const primaryFileInputRef = useRef<HTMLInputElement>(null);
   const galleryFileInputRef = useRef<HTMLInputElement>(null);
+
+  // Determine fallback placeholder based on device category
+  const defaultPlaceholder =
+    category === "laptop"
+      ? "/images/placeholder-laptop.svg"
+      : category === "gadget"
+      ? "/images/placeholder-gadget.svg"
+      : category === "accessory"
+      ? "/images/placeholder-accessory.svg"
+      : "/images/placeholder-phone.svg";
 
   // Upload a file to /api/admin/upload
   const uploadFile = async (file: File): Promise<string | null> => {
@@ -73,7 +87,6 @@ export default function ImageUploader({
     if (url) {
       onPrimaryChange(url);
     }
-    // reset input
     if (primaryFileInputRef.current) {
       primaryFileInputRef.current.value = "";
     }
@@ -138,7 +151,7 @@ export default function ImageUploader({
     <div className="space-y-5">
       {/* Upload Error Alert */}
       {uploadError && (
-        <div className="flex items-center gap-2 rounded-2xl border border-rose-500/30 bg-rose-950/40 p-3.5 text-xs text-rose-400">
+        <div className="flex items-center gap-2 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-3.5 text-xs text-rose-600 dark:text-rose-400">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{uploadError}</span>
         </div>
@@ -163,33 +176,45 @@ export default function ImageUploader({
 
       {/* Primary Picture Section */}
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2.5">
-          Main Product Picture *
-        </label>
+        <div className="flex items-center justify-between mb-2.5">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b]">
+            Main Product Picture *
+          </label>
+          {!primaryImage && (
+            <button
+              type="button"
+              onClick={() => onPrimaryChange(defaultPlaceholder)}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1d1d1f] dark:text-white hover:underline"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-[#86868b]" />
+              <span>Use Default Silhouette</span>
+            </button>
+          )}
+        </div>
 
         {primaryImage ? (
           /* Image Preview Box */
-          <div className="relative rounded-3xl border border-white/10 bg-zinc-900/60 p-5 flex flex-col sm:flex-row items-center gap-6">
-            <div className="relative h-44 w-44 shrink-0 rounded-2xl border border-white/10 bg-zinc-950 p-2 overflow-hidden flex items-center justify-center">
+          <div className="relative rounded-3xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.03] p-5 flex flex-col sm:flex-row items-center gap-6">
+            <div className="relative h-44 w-44 shrink-0 rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-zinc-950 p-2 overflow-hidden flex items-center justify-center shadow-sm">
               <Image
                 src={primaryImage}
                 alt="Product preview"
                 width={160}
                 height={160}
                 className="max-h-40 w-auto object-contain"
-                unoptimized={primaryImage.startsWith("http")}
+                unoptimized={primaryImage.startsWith("http") || primaryImage.endsWith(".svg")}
               />
-              <span className="absolute top-2 left-2 rounded-md bg-blue-600/90 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+              <span className="absolute top-2 left-2 rounded-full bg-[#1d1d1f] dark:bg-white px-2 py-0.5 text-[10px] font-bold text-white dark:text-black shadow-sm">
                 Primary
               </span>
             </div>
 
             <div className="space-y-3 flex-1 text-center sm:text-left">
-              <div className="flex items-center justify-center sm:justify-start gap-2 text-emerald-400 text-xs font-medium">
+              <div className="flex items-center justify-center sm:justify-start gap-2 text-emerald-600 dark:text-emerald-400 text-xs font-medium">
                 <CheckCircle2 className="h-4 w-4" />
                 <span>Picture ready & attached</span>
               </div>
-              <p className="text-xs text-zinc-400 font-mono break-all line-clamp-2">
+              <p className="text-xs text-[#86868b] font-mono break-all line-clamp-2">
                 {primaryImage}
               </p>
 
@@ -198,7 +223,7 @@ export default function ImageUploader({
                   type="button"
                   onClick={() => primaryFileInputRef.current?.click()}
                   disabled={uploading}
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-zinc-800 px-4 py-2 text-xs font-semibold text-white hover:bg-zinc-700 transition"
+                  className="apple-button-secondary text-xs"
                 >
                   <RefreshCw className={`h-3.5 w-3.5 ${uploading ? "animate-spin" : ""}`} />
                   <span>Replace Picture</span>
@@ -207,7 +232,7 @@ export default function ImageUploader({
                 <button
                   type="button"
                   onClick={() => onPrimaryChange("")}
-                  className="inline-flex items-center gap-2 rounded-xl border border-rose-500/20 bg-rose-950/20 px-4 py-2 text-xs font-semibold text-rose-400 hover:bg-rose-900/30 transition"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/20 bg-rose-500/10 px-4 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   <span>Remove</span>
@@ -225,46 +250,60 @@ export default function ImageUploader({
             onClick={() => primaryFileInputRef.current?.click()}
             className={`cursor-pointer rounded-3xl border-2 border-dashed p-8 text-center transition-all ${
               dragActive
-                ? "border-blue-500 bg-blue-500/10"
-                : "border-white/15 bg-zinc-900/40 hover:border-blue-500/50 hover:bg-zinc-900/60"
+                ? "border-[#1d1d1f] dark:border-white bg-black/5 dark:bg-white/5"
+                : "border-black/15 dark:border-white/15 bg-black/[0.01] dark:bg-white/[0.02] hover:border-[#1d1d1f]/40 dark:hover:border-white/40"
             }`}
           >
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-900 text-blue-400 border border-white/10 mb-4 shadow-lg shadow-black/40">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white dark:bg-zinc-900 text-[#1d1d1f] dark:text-white border border-black/10 dark:border-white/10 mb-4 shadow-sm">
               {uploading ? (
-                <Loader2 className="h-6 w-6 animate-spin text-blue-400" />
+                <Loader2 className="h-6 w-6 animate-spin" />
               ) : (
                 <UploadCloud className="h-6 w-6" />
               )}
             </div>
 
-            <h4 className="text-sm font-bold text-white">
+            <h4 className="text-sm font-bold text-[#1d1d1f] dark:text-white">
               {uploading ? "Uploading picture..." : "Click to choose a picture or drag & drop"}
             </h4>
-            <p className="mt-1 text-xs text-zinc-400">
-              PNG, JPG, JPEG, or WebP from your phone or computer (up to 10MB)
+            <p className="mt-1 text-xs text-[#86868b]">
+              PNG, JPG, JPEG, SVG, or WebP from your phone or computer (up to 10MB)
             </p>
 
-            <button
-              type="button"
-              disabled={uploading}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2 text-xs font-semibold text-white shadow-md shadow-blue-900/30 hover:bg-blue-500 transition"
-            >
-              <ImagePlus className="h-3.5 w-3.5" />
-              <span>Browse Device</span>
-            </button>
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <button
+                type="button"
+                disabled={uploading}
+                className="apple-button-primary text-xs"
+              >
+                <ImagePlus className="h-3.5 w-3.5" />
+                <span>Browse Files</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPrimaryChange(defaultPlaceholder);
+                }}
+                className="apple-button-secondary text-xs"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>Use Silhouette</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
 
       {/* Optional Gallery Additional Pictures */}
       {onGalleryChange && (
-        <div className="pt-2 border-t border-white/5">
+        <div className="pt-3 border-t border-black/5 dark:border-white/5">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#86868b]">
                 Additional Gallery Pictures (Optional)
               </span>
-              <p className="text-[11px] text-zinc-500">
+              <p className="text-[11px] text-[#86868b]">
                 Add side angles, back view, or retail packaging.
               </p>
             </div>
@@ -273,9 +312,9 @@ export default function ImageUploader({
               type="button"
               onClick={() => galleryFileInputRef.current?.click()}
               disabled={uploading}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-zinc-900 px-3 py-1.5 text-xs font-semibold text-zinc-300 hover:bg-zinc-800 hover:text-white transition"
+              className="apple-button-secondary text-xs"
             >
-              <ImagePlus className="h-3.5 w-3.5 text-blue-400" />
+              <ImagePlus className="h-3.5 w-3.5" />
               <span>+ Add Angle</span>
             </button>
           </div>
@@ -285,7 +324,7 @@ export default function ImageUploader({
               {galleryImages.map((imgUrl, idx) => (
                 <div
                   key={idx}
-                  className="relative group h-20 w-20 rounded-xl border border-white/10 bg-zinc-900 overflow-hidden flex items-center justify-center p-1"
+                  className="relative group h-20 w-20 rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-zinc-900 overflow-hidden flex items-center justify-center p-1 shadow-sm"
                 >
                   <Image
                     src={imgUrl}
@@ -293,7 +332,7 @@ export default function ImageUploader({
                     width={70}
                     height={70}
                     className="max-h-16 w-auto object-contain"
-                    unoptimized={imgUrl.startsWith("http")}
+                    unoptimized={imgUrl.startsWith("http") || imgUrl.endsWith(".svg")}
                   />
                   <button
                     type="button"
@@ -315,7 +354,7 @@ export default function ImageUploader({
         <button
           type="button"
           onClick={() => setShowUrlFallback(!showUrlFallback)}
-          className="inline-flex items-center gap-1.5 text-[11px] text-zinc-500 hover:text-zinc-300 transition"
+          className="inline-flex items-center gap-1.5 text-[11px] text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white transition"
         >
           <LinkIcon className="h-3 w-3" />
           <span>{showUrlFallback ? "Hide URL input" : "Or paste image URL instead"}</span>
@@ -327,13 +366,13 @@ export default function ImageUploader({
               type="text"
               value={manualUrl}
               onChange={(e) => setManualUrl(e.target.value)}
-              placeholder="https://images.unsplash.com/... or /uploads/..."
-              className="flex-1 rounded-xl border border-white/10 bg-zinc-900/90 px-3.5 py-2 text-xs text-white placeholder-zinc-500 outline-none focus:border-blue-500 font-mono"
+              placeholder="https://... or /uploads/... or /images/placeholder-phone.svg"
+              className="flex-1 rounded-xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 px-3.5 py-2 text-xs text-[#1d1d1f] dark:text-white placeholder-[#86868b] outline-none focus:border-[#1d1d1f] dark:focus:border-white font-mono transition"
             />
             <button
               type="button"
               onClick={handleApplyManualUrl}
-              className="rounded-xl bg-zinc-800 px-4 py-2 text-xs font-semibold text-white hover:bg-zinc-700 transition"
+              className="apple-button-secondary text-xs"
             >
               Apply
             </button>
