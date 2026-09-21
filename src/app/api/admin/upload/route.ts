@@ -4,9 +4,7 @@ import path from "path";
 import { isAdminAuthenticated } from "@/lib/adminAuth";
 
 export const dynamic = "force-dynamic";
-
-// Max file size: 25MB (client-side compression also reduces large gallery photos)
-const MAX_FILE_SIZE = 25 * 1024 * 1024;
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
   const authenticated = await isAdminAuthenticated();
@@ -16,62 +14,65 @@ export async function POST(req: NextRequest) {
 
   try {
     const formData = await req.formData();
-    const file = formData.get("file") as File | null;
+    const fileEntry = formData.get("file");
 
-    if (!file) {
+    if (!fileEntry || typeof fileEntry === "string") {
       return NextResponse.json({ error: "No file provided in upload request" }, { status: 400 });
     }
 
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { error: "Image file is too large (maximum 25MB)" },
-        { status: 400 }
-      );
+    const file = fileEntry as File;
+    const rawName = file.name || "photo.jpg";
+    const fileType = file.type || "image/jpeg";
+
+    // Extract buffer from File
+    const arrayBuf = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuf);
+
+    if (buffer.length === 0) {
+      return NextResponse.json({ error: "Uploaded file is empty" }, { status: 400 });
     }
 
-    // Flexible format check supporting mobile gallery formats (HEIC, HEIF, WebP, etc.)
-    const isImageType =
-      file.type.startsWith("image/") ||
-      file.type === "application/octet-stream" ||
-      file.name.match(/\.(jpg|jpeg|png|webp|gif|avif|heic|heif|svg|bmp|tiff)$/i);
-
-    if (!isImageType) {
-      return NextResponse.json(
-        { error: "Invalid file format. Please upload a photo or graphic (JPG, PNG, WebP, HEIC, SVG)." },
-        { status: 400 }
-      );
-    }
-
-    // Prepare upload directory
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
-    }
-
-    // Extract or infer extension
-    let cleanExt = path.extname(file.name).toLowerCase();
+    // Determine clean file extension
+    let cleanExt = path.extname(rawName).toLowerCase();
     if (!cleanExt || cleanExt === ".") {
-      if (file.type.includes("png")) cleanExt = ".png";
-      else if (file.type.includes("webp")) cleanExt = ".webp";
-      else if (file.type.includes("svg")) cleanExt = ".svg";
-      else if (file.type.includes("heic")) cleanExt = ".heic";
+      if (fileType.includes("png")) cleanExt = ".png";
+      else if (fileType.includes("webp")) cleanExt = ".webp";
+      else if (fileType.includes("svg")) cleanExt = ".svg";
+      else if (fileType.includes("heic")) cleanExt = ".heic";
       else cleanExt = ".jpg";
     }
 
-    const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
-    const filename = `product-${uniqueSuffix}${cleanExt}`;
-    const filePath = path.join(uploadsDir, filename);
+    // Attempt to write file to public/uploads on disk
+    try {
+      const uploadsDir = path.join(process.cwd(), "public", "uploads");
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
 
-    // Write file to disk
-    const buffer = Buffer.from(await file.arrayBuffer());
-    fs.writeFileSync(filePath, buffer);
+      const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+      const filename = `product-${uniqueSuffix}${cleanExt}`;
+      const filePath = path.join(uploadsDir, filename);
 
-    const publicUrl = `/uploads/${filename}`;
-    return NextResponse.json({ success: true, url: publicUrl }, { status: 201 });
+      fs.writeFileSync(filePath, buffer);
+
+      const publicUrl = `/uploads/${filename}`;
+      return NextResponse.json({ success: true, url: publicUrl }, { status: 201 });
+    } catch (diskWriteError) {
+      console.warn("Disk write failed, falling back to base64 data URL:", diskWriteError);
+      // Fallback: If disk is read-only or locked, return base64 Data URL so the upload NEVER fails
+      const mimeType = fileType.startsWith("image/") ? fileType : "image/jpeg";
+      const base64Url = `data:${mimeType};base64,${buffer.toString("base64")}`;
+      return NextResponse.json({ success: true, url: base64Url }, { status: 201 });
+    }
   } catch (error) {
-    console.error("Upload error:", error);
+    console.error("Upload fatal error:", error);
     return NextResponse.json(
-      { error: "Failed to process and upload image to disk" },
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to process and upload image to disk",
+      },
       { status: 500 }
     );
   }

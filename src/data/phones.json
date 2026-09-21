@@ -1,5 +1,32 @@
 [
   {
+    "name": "Google Pixel 9 Pro Fold",
+    "slug": "google-pixel-9-pro-fold",
+    "brand": "Google",
+    "category": "phone",
+    "storage": "256GB",
+    "storageOptions": [
+      "256GB",
+      "512GB"
+    ],
+    "condition": "UK Used",
+    "colors": [
+      "Porcelain",
+      "Obsidian"
+    ],
+    "image": "/uploads/product-1789985391131-sdyaxx.jpg",
+    "images": [
+      "/uploads/product-1789985391131-sdyaxx.jpg"
+    ],
+    "featured": true,
+    "inStock": true,
+    "tagline": "",
+    "overview": "",
+    "priceNote": "Price on daily request",
+    "specs": {},
+    "id": 4
+  },
+  {
     "name": "Samsung Galaxy S25 Ultra",
     "slug": "samsung-galaxy-s25-ultra",
     "brand": "Samsung",
