@@ -13,6 +13,9 @@ export const metadata = {
   title: "Edit Device | Admin | Available Tech",
 };
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function EditPhonePage({ params }: EditPhonePageProps) {
   const authenticated = await isAdminAuthenticated();
   if (!authenticated) {
@@ -26,5 +29,5 @@ export default async function EditPhonePage({ params }: EditPhonePageProps) {
     notFound();
   }
 
-  return <EditPhoneClient phone={phone} />;
+  return <EditPhoneClient key={phone.id} phone={phone} />;
 }

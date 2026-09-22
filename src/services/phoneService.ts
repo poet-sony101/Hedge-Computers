@@ -39,9 +39,14 @@ function triggerRevalidation() {
     revalidatePath("/", "layout");
     revalidatePath("/", "page");
     revalidatePath("/admin", "layout");
-    revalidatePath("/admin/phones", "page");
     revalidatePath("/admin", "page");
+    revalidatePath("/admin/phones", "layout");
+    revalidatePath("/admin/phones", "page");
+    revalidatePath("/admin/phones/[id]/edit", "page");
+    revalidatePath("/admin/phones/new", "page");
+    revalidatePath("/phones", "layout");
     revalidatePath("/phones", "page");
+    revalidatePath("/phones/[slug]", "page");
     revalidatePath("/products", "page");
     revalidatePath("/laptops", "page");
   } catch {

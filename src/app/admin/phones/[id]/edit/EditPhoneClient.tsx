@@ -77,6 +77,39 @@ export default function EditPhoneClient({ phone }: EditPhoneClientProps) {
     (phone.images || []).filter((img) => img !== phone.image)
   );
 
+  // Keep form data synchronized during render if phone prop updates (official React pattern)
+  const [prevPhone, setPrevPhone] = useState(phone);
+  if (phone !== prevPhone) {
+    setPrevPhone(phone);
+    setFormData({
+      name: phone.name,
+      slug: phone.slug,
+      category: (phone.category || "phone") as DeviceCategory,
+      brand: phone.brand,
+      condition: phone.condition,
+      storage: phone.storage,
+      storageOptions: (phone.storageOptions || [phone.storage]).join(", "),
+      colors: (phone.colors || []).join(", "),
+      image: phone.image,
+      priceNote: phone.priceNote || "Price on daily request (market rate)",
+      inStock: phone.inStock,
+      featured: phone.featured,
+      tagline: phone.tagline || "",
+      overview: phone.overview || "",
+      display: phone.specs?.display || "",
+      processor: phone.specs?.processor || "",
+      ram: phone.specs?.ram || "",
+      camera: phone.specs?.camera || "",
+      battery: phone.specs?.battery || "",
+      os: phone.specs?.os || "",
+      charging: phone.specs?.charging || "",
+      gpu: phone.specs?.gpu || "",
+      ports: phone.specs?.ports || "",
+      batteryHealth: phone.specs?.batteryHealth || "",
+    });
+    setGalleryImages((phone.images || []).filter((img) => img !== phone.image));
+  }
+
   const isLaptop = formData.category === "laptop";
 
   const categoryLabel =
@@ -154,8 +187,12 @@ export default function EditPhoneClient({ phone }: EditPhoneClientProps) {
       const data = await res.json();
 
       if (!res.ok) {
-        const errorMsg = data.error || "Failed to update device details";
-        setError(errorMsg);
+        if (res.status === 401) {
+          setError("Your admin session has expired. Please log in again at /admin/login.");
+        } else {
+          const errorMsg = data.error || "Failed to update device details";
+          setError(errorMsg);
+        }
         setLoading(false);
         if (typeof window !== "undefined") {
           window.scrollTo({ top: 0, behavior: "smooth" });
@@ -163,15 +200,16 @@ export default function EditPhoneClient({ phone }: EditPhoneClientProps) {
         return;
       }
 
+      router.refresh();
       const redirectUrl = `/admin/phones?updated=${encodeURIComponent(payload.name)}&t=${Date.now()}`;
       if (typeof window !== "undefined") {
         window.location.href = redirectUrl;
       } else {
         router.push(redirectUrl);
-        router.refresh();
       }
-    } catch {
-      setError("An unexpected error occurred while saving modifications.");
+    } catch (err) {
+      console.error("Save error:", err);
+      setError("An unexpected network error occurred while saving modifications. Please verify the dev server is active and try again.");
       setLoading(false);
       if (typeof window !== "undefined") {
         window.scrollTo({ top: 0, behavior: "smooth" });

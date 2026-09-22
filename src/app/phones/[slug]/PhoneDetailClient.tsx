@@ -129,6 +129,11 @@ export default function PhoneDetailClient({
                 height={360}
                 className="max-h-[360px] w-auto object-contain drop-shadow-2xl transition-transform duration-500 hover:scale-105"
                 priority
+                unoptimized={
+                  phone.image.startsWith("http") ||
+                  phone.image.startsWith("data:") ||
+                  phone.image.endsWith(".svg")
+                }
               />
             </div>
           </div>

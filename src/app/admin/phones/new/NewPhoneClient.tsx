@@ -240,8 +240,9 @@ export default function NewPhoneClient() {
         router.push(redirectUrl);
         router.refresh();
       }
-    } catch {
-      setError("An unexpected error occurred while saving the device.");
+    } catch (err) {
+      console.error("Submit error:", err);
+      setError("An unexpected network error occurred while publishing device. Please verify the dev server is active and try again.");
       setLoading(false);
       if (typeof window !== "undefined") {
         window.scrollTo({ top: 0, behavior: "smooth" });

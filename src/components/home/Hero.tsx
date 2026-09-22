@@ -129,6 +129,11 @@ export default function Hero({ spotlightProduct }: HeroProps) {
                     height={240}
                     className="max-h-52 w-auto object-contain drop-shadow-xl"
                     priority
+                    unoptimized={
+                      spotlightProduct.image.startsWith("http") ||
+                      spotlightProduct.image.startsWith("data:") ||
+                      spotlightProduct.image.endsWith(".svg")
+                    }
                   />
                 </div>
 

@@ -1,5 +1,28 @@
 [
   {
+    "name": "Dell XPS 16 (Touch OLED Edition)",
+    "slug": "dell-xps-16",
+    "brand": "Dell",
+    "category": "laptop",
+    "storage": "2TB SSD",
+    "storageOptions": [
+      "1TB SSD"
+    ],
+    "condition": "Brand New",
+    "colors": [],
+    "image": "/images/placeholder-laptop.svg",
+    "images": [
+      "/images/placeholder-laptop.svg"
+    ],
+    "featured": true,
+    "inStock": true,
+    "tagline": "",
+    "overview": "",
+    "priceNote": "₦2,950,000 updated price",
+    "specs": {},
+    "id": 6
+  },
+  {
     "name": "MacBook Air 15 M3",
     "slug": "macbook-air-15-m3",
     "brand": "Apple",

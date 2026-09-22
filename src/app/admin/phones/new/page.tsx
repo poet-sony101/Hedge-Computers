@@ -6,6 +6,9 @@ export const metadata = {
   title: "Add Device | Admin | Available Tech",
 };
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function NewPhonePage() {
   const authenticated = await isAdminAuthenticated();
   if (!authenticated) {

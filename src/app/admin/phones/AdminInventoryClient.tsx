@@ -36,27 +36,42 @@ export default function AdminInventoryClient({
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Read URL query params lazily to avoid setState in effect body
-  const [notification, setNotification] = useState<{
-    message: string;
-    type: "success" | "info";
-  } | null>(() => {
-    const added = searchParams.get("added");
-    const updated = searchParams.get("updated");
-    if (added) {
+  // Store prevInitialPhones to synchronize state during render (official React pattern)
+  const [prevInitialPhones, setPrevInitialPhones] = useState(initialPhones);
+  if (initialPhones !== prevInitialPhones) {
+    setPrevInitialPhones(initialPhones);
+    setPhones(initialPhones);
+  }
+
+  // Derive notifications from searchParams without setState in effect
+  const addedParam = searchParams.get("added");
+  const updatedParam = searchParams.get("updated");
+  const [dismissedKey, setDismissedKey] = useState<string | null>(null);
+
+  const activeNotificationKey = addedParam
+    ? `added-${addedParam}`
+    : updatedParam
+    ? `updated-${updatedParam}`
+    : null;
+
+  const notification = useMemo(() => {
+    if (!activeNotificationKey || dismissedKey === activeNotificationKey) {
+      return null;
+    }
+    if (addedParam) {
       return {
-        message: `Success! "${added}" was created and published live in the store catalog.`,
-        type: "success",
+        message: `Success! "${addedParam}" was created and published live in the store catalog.`,
+        type: "success" as const,
       };
     }
-    if (updated) {
+    if (updatedParam) {
       return {
-        message: `Success! "${updated}" details were saved and updated live.`,
-        type: "success",
+        message: `Success! "${updatedParam}" details were saved and updated live.`,
+        type: "success" as const,
       };
     }
     return null;
-  });
+  }, [activeNotificationKey, dismissedKey, addedParam, updatedParam]);
 
   // Client-side live data refresh for manual button click
   const fetchLivePhones = useCallback(async () => {
@@ -98,12 +113,15 @@ export default function AdminInventoryClient({
     };
   }, []);
 
-  // Clean up URL query parameters seamlessly
+  // Clean up URL query parameters after banner is displayed
   useEffect(() => {
-    if (searchParams.get("added") || searchParams.get("updated")) {
-      window.history.replaceState({}, "", "/admin/phones");
+    if (addedParam || updatedParam) {
+      const timer = setTimeout(() => {
+        window.history.replaceState({}, "", "/admin/phones");
+      }, 2000);
+      return () => clearTimeout(timer);
     }
-  }, [searchParams]);
+  }, [addedParam, updatedParam]);
 
   // Quick Price Edit Modal State
   const [editingPricePhone, setEditingPricePhone] = useState<Phone | null>(null);
@@ -258,7 +276,7 @@ export default function AdminInventoryClient({
             <span>{notification.message}</span>
           </div>
           <button
-            onClick={() => setNotification(null)}
+            onClick={() => setDismissedKey(activeNotificationKey)}
             className="text-emerald-700 dark:text-emerald-400 hover:text-emerald-950 dark:hover:text-white p-1 rounded-full transition"
             title="Dismiss notification"
           >
@@ -389,7 +407,11 @@ export default function AdminInventoryClient({
                           width={36}
                           height={36}
                           className="max-h-8 w-auto object-contain"
-                          unoptimized={phone.image.startsWith("http")}
+                          unoptimized={
+                            phone.image.startsWith("http") ||
+                            phone.image.startsWith("data:") ||
+                            phone.image.endsWith(".svg")
+                          }
                         />
                       </div>
                       <div className="min-w-0">

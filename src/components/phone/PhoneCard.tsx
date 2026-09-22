@@ -65,6 +65,11 @@ export default function PhoneCard({ phone }: PhoneCardProps) {
             height={200}
             className="max-h-44 w-auto object-contain transition-transform duration-500 group-hover:scale-105 drop-shadow-md"
             priority={phone.featured}
+            unoptimized={
+              phone.image.startsWith("http") ||
+              phone.image.startsWith("data:") ||
+              phone.image.endsWith(".svg")
+            }
           />
         </Link>
       </div>
