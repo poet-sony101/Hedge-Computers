@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/adminAuth";
 import { getPhoneById, updatePhone, deletePhone } from "@/services/phoneService";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type RouteParams = {
   params: Promise<{
     id: string;

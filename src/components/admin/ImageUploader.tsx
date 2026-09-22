@@ -10,9 +10,10 @@ import {
   RefreshCw,
   Loader2,
   Link as LinkIcon,
-  Sparkles,
   Grid,
   X,
+  Smartphone,
+  Laptop,
 } from "lucide-react";
 import { DeviceCategory } from "@/types/phone";
 
@@ -26,13 +27,13 @@ interface ImageUploaderProps {
 
 // Preset verified catalog pictures
 const STOCK_LIBRARY = [
+  { name: "Apple MacBook / Laptop Silhouette", url: "/images/placeholder-laptop.svg", cat: "laptop" },
+  { name: "Apple Smartphone Silhouette", url: "/images/placeholder-phone.svg", cat: "phone" },
   { name: "iPhone 15 Pro Max (Natural Titanium)", url: "/phones/iphone15promax.jpg", cat: "phone" },
   { name: "Samsung Galaxy S25 Ultra (Titanium Gray)", url: "/phones/s25ultra.jpg", cat: "phone" },
   { name: "Google Pixel 9 Pro (Obsidian)", url: "/phones/pixel9pro.jpg", cat: "phone" },
-  { name: "MacBook Pro / Laptop (Machined Silver)", url: "/images/placeholder-laptop.svg", cat: "laptop" },
   { name: "Smartwatch / Audio (Titanium Gray)", url: "/images/placeholder-gadget.svg", cat: "gadget" },
   { name: "Power & Charger (Space Gray)", url: "/images/placeholder-accessory.svg", cat: "accessory" },
-  { name: "Apple Smartphone Silhouette", url: "/images/placeholder-phone.svg", cat: "phone" },
 ];
 
 /**
@@ -125,7 +126,6 @@ async function compressImageFile(file: File): Promise<File> {
 export default function ImageUploader({
   primaryImage,
   galleryImages = [],
-  category = "phone",
   onPrimaryChange,
   onGalleryChange,
 }: ImageUploaderProps) {
@@ -138,16 +138,6 @@ export default function ImageUploader({
 
   const primaryFileInputRef = useRef<HTMLInputElement>(null);
   const galleryFileInputRef = useRef<HTMLInputElement>(null);
-
-  // Fallback placeholder based on device category
-  const defaultPlaceholder =
-    category === "laptop"
-      ? "/images/placeholder-laptop.svg"
-      : category === "gadget"
-      ? "/images/placeholder-gadget.svg"
-      : category === "accessory"
-      ? "/images/placeholder-accessory.svg"
-      : "/images/placeholder-phone.svg";
 
   // Upload a file to /api/admin/upload with automatic Data URL fallback
   const uploadOrFallbackFile = async (file: File): Promise<string> => {
@@ -306,29 +296,45 @@ export default function ImageUploader({
 
       {/* Primary Picture Section */}
       <div>
-        <div className="flex items-center justify-between mb-2.5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-2.5">
           <label className="block text-xs font-semibold uppercase tracking-wider text-[#86868b]">
             Main Product Picture *
           </label>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onPrimaryChange("/images/placeholder-phone.svg")}
+              className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition ${
+                primaryImage === "/images/placeholder-phone.svg"
+                  ? "bg-[#1d1d1f] text-white dark:bg-white dark:text-black border-transparent shadow-sm"
+                  : "border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 text-[#1d1d1f] dark:text-white hover:border-[#1d1d1f]/40 dark:hover:border-white/40"
+              }`}
+              title="Use Apple Smartphone silhouette graphic"
+            >
+              <Smartphone className="h-3.5 w-3.5" />
+              <span>Phone Silhouette</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onPrimaryChange("/images/placeholder-laptop.svg")}
+              className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition ${
+                primaryImage === "/images/placeholder-laptop.svg"
+                  ? "bg-[#1d1d1f] text-white dark:bg-white dark:text-black border-transparent shadow-sm"
+                  : "border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/5 text-[#1d1d1f] dark:text-white hover:border-[#1d1d1f]/40 dark:hover:border-white/40"
+              }`}
+              title="Use Apple MacBook/Laptop silhouette graphic"
+            >
+              <Laptop className="h-3.5 w-3.5" />
+              <span>Laptop Silhouette</span>
+            </button>
             <button
               type="button"
               onClick={() => setShowStockModal(true)}
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1d1d1f] dark:text-white hover:underline"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white px-2 py-1.5 hover:underline"
             >
-              <Grid className="h-3.5 w-3.5 text-[#86868b]" />
-              <span>Choose from Catalog Gallery</span>
+              <Grid className="h-3.5 w-3.5" />
+              <span>Catalog Gallery</span>
             </button>
-            {!primaryImage && (
-              <button
-                type="button"
-                onClick={() => onPrimaryChange(defaultPlaceholder)}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white"
-              >
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>Use Silhouette</span>
-              </button>
-            )}
           </div>
         </div>
 
@@ -362,15 +368,37 @@ export default function ImageUploader({
                 {primaryImage.startsWith("data:") ? "Image attached (base64 photo)" : primaryImage}
               </p>
 
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 pt-1">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
                 <button
                   type="button"
                   onClick={() => primaryFileInputRef.current?.click()}
                   disabled={uploading}
-                  className="apple-button-secondary text-xs inline-flex items-center gap-2"
+                  className="apple-button-secondary text-xs inline-flex items-center gap-1.5"
                 >
                   <RefreshCw className={`h-3.5 w-3.5 ${uploading ? "animate-spin" : ""}`} />
                   <span>Upload Different Photo</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onPrimaryChange("/images/placeholder-phone.svg")}
+                  className={`apple-button-secondary text-xs inline-flex items-center gap-1.5 ${
+                    primaryImage === "/images/placeholder-phone.svg" ? "ring-2 ring-[#1d1d1f] dark:ring-white font-semibold" : ""
+                  }`}
+                >
+                  <Smartphone className="h-3.5 w-3.5" />
+                  <span>Phone Silhouette</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onPrimaryChange("/images/placeholder-laptop.svg")}
+                  className={`apple-button-secondary text-xs inline-flex items-center gap-1.5 ${
+                    primaryImage === "/images/placeholder-laptop.svg" ? "ring-2 ring-[#1d1d1f] dark:ring-white font-semibold" : ""
+                  }`}
+                >
+                  <Laptop className="h-3.5 w-3.5" />
+                  <span>Laptop Silhouette</span>
                 </button>
 
                 <button
@@ -385,7 +413,7 @@ export default function ImageUploader({
                 <button
                   type="button"
                   onClick={() => onPrimaryChange("")}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/20 bg-rose-500/10 px-4 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/20 bg-rose-500/10 px-3.5 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   <span>Remove</span>
@@ -426,7 +454,7 @@ export default function ImageUploader({
               <button
                 type="button"
                 disabled={uploading}
-                className="apple-button-primary text-xs"
+                className="apple-button-primary text-xs inline-flex items-center gap-1.5"
               >
                 <ImagePlus className="h-3.5 w-3.5" />
                 <span>Upload from Gallery / Files</span>
@@ -436,24 +464,36 @@ export default function ImageUploader({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setShowStockModal(true);
+                  onPrimaryChange("/images/placeholder-phone.svg");
                 }}
-                className="apple-button-secondary text-xs"
+                className="apple-button-secondary text-xs inline-flex items-center gap-1.5"
               >
-                <Grid className="h-3.5 w-3.5" />
-                <span>Choose from Catalog Gallery</span>
+                <Smartphone className="h-3.5 w-3.5" />
+                <span>Phone Silhouette</span>
               </button>
 
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onPrimaryChange(defaultPlaceholder);
+                  onPrimaryChange("/images/placeholder-laptop.svg");
                 }}
-                className="apple-button-secondary text-xs"
+                className="apple-button-secondary text-xs inline-flex items-center gap-1.5"
               >
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>Use Silhouette</span>
+                <Laptop className="h-3.5 w-3.5" />
+                <span>Laptop Silhouette</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowStockModal(true);
+                }}
+                className="apple-button-secondary text-xs inline-flex items-center gap-1.5"
+              >
+                <Grid className="h-3.5 w-3.5" />
+                <span>Catalog Gallery</span>
               </button>
             </div>
           </div>

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/adminAuth";
 import { getAllPhones } from "@/services/phoneService";
@@ -18,5 +19,15 @@ export default async function AdminPhonesPage() {
 
   const phones = await getAllPhones();
 
-  return <AdminInventoryClient initialPhones={phones} />;
+  return (
+    <Suspense
+      fallback={
+        <div className="p-8 text-center text-xs text-[#86868b]">
+          Loading inventory database...
+        </div>
+      }
+    >
+      <AdminInventoryClient initialPhones={phones} />
+    </Suspense>
+  );
 }

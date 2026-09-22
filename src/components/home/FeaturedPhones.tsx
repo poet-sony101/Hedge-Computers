@@ -6,8 +6,8 @@ import { getGeneralInquiryUrl } from "@/utils/whatsapp";
 
 export default async function FeaturedPhones() {
   const products = await getAllPhones();
-  const featuredList = products.filter((p) => p.featured);
-  const displayList = featuredList.length > 0 ? featuredList.slice(0, 6) : products.slice(0, 6);
+  // Display latest products (up to 6) so any newly created smartphone or laptop immediately reflects on the homepage
+  const displayList = products.slice(0, 6);
   const whatsappUrl = getGeneralInquiryUrl();
 
   return (

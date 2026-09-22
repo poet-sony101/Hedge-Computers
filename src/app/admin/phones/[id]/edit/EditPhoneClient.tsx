@@ -163,10 +163,11 @@ export default function EditPhoneClient({ phone }: EditPhoneClientProps) {
         return;
       }
 
+      const redirectUrl = `/admin/phones?updated=${encodeURIComponent(payload.name)}&t=${Date.now()}`;
       if (typeof window !== "undefined") {
-        window.location.href = "/admin/phones";
+        window.location.href = redirectUrl;
       } else {
-        router.push("/admin/phones");
+        router.push(redirectUrl);
         router.refresh();
       }
     } catch {

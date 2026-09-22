@@ -37,6 +37,7 @@ function writeData(phones: Phone[]): boolean {
 function triggerRevalidation() {
   try {
     revalidatePath("/", "layout");
+    revalidatePath("/", "page");
     revalidatePath("/admin", "layout");
     revalidatePath("/admin/phones", "page");
     revalidatePath("/admin", "page");

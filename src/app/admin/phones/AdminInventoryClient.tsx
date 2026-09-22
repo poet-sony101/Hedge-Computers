@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import {
   Search,
   PlusCircle,
@@ -26,6 +27,7 @@ interface AdminInventoryClientProps {
 export default function AdminInventoryClient({
   initialPhones,
 }: AdminInventoryClientProps) {
+  const searchParams = useSearchParams();
   const [phones, setPhones] = useState<Phone[]>(initialPhones);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All"); // All, phone, laptop, gadget, accessory
@@ -34,8 +36,30 @@ export default function AdminInventoryClient({
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Client-side live data refresh
-  const fetchLivePhones = async () => {
+  // Read URL query params lazily to avoid setState in effect body
+  const [notification, setNotification] = useState<{
+    message: string;
+    type: "success" | "info";
+  } | null>(() => {
+    const added = searchParams.get("added");
+    const updated = searchParams.get("updated");
+    if (added) {
+      return {
+        message: `Success! "${added}" was created and published live in the store catalog.`,
+        type: "success",
+      };
+    }
+    if (updated) {
+      return {
+        message: `Success! "${updated}" details were saved and updated live.`,
+        type: "success",
+      };
+    }
+    return null;
+  });
+
+  // Client-side live data refresh for manual button click
+  const fetchLivePhones = useCallback(async () => {
     setIsRefreshing(true);
     try {
       const res = await fetch("/api/admin/phones", { cache: "no-store" });
@@ -50,7 +74,36 @@ export default function AdminInventoryClient({
     } finally {
       setIsRefreshing(false);
     }
-  };
+  }, []);
+
+  // Automatically fetch fresh data asynchronously on mount
+  useEffect(() => {
+    let ignore = false;
+    async function loadData() {
+      try {
+        const res = await fetch("/api/admin/phones", { cache: "no-store" });
+        if (res.ok && !ignore) {
+          const data = await res.json();
+          if (Array.isArray(data.phones)) {
+            setPhones(data.phones);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load inventory:", e);
+      }
+    }
+    loadData();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  // Clean up URL query parameters seamlessly
+  useEffect(() => {
+    if (searchParams.get("added") || searchParams.get("updated")) {
+      window.history.replaceState({}, "", "/admin/phones");
+    }
+  }, [searchParams]);
 
   // Quick Price Edit Modal State
   const [editingPricePhone, setEditingPricePhone] = useState<Phone | null>(null);
@@ -197,6 +250,23 @@ export default function AdminInventoryClient({
 
   return (
     <div className="space-y-6">
+      {/* Dynamic Action Notification Banner */}
+      {notification && (
+        <div className="flex items-center justify-between gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-xs font-semibold text-emerald-800 dark:text-emerald-300 shadow-sm transition">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+            <span>{notification.message}</span>
+          </div>
+          <button
+            onClick={() => setNotification(null)}
+            className="text-emerald-700 dark:text-emerald-400 hover:text-emerald-950 dark:hover:text-white p-1 rounded-full transition"
+            title="Dismiss notification"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

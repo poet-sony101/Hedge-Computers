@@ -1,5 +1,41 @@
 [
   {
+    "name": "MacBook Air 15 M3",
+    "slug": "macbook-air-15-m3",
+    "brand": "Apple",
+    "category": "laptop",
+    "storage": "512GB SSD",
+    "storageOptions": [
+      "256GB SSD",
+      "512GB SSD",
+      "1TB SSD"
+    ],
+    "condition": "UK Used",
+    "colors": [
+      "Midnight",
+      "Starlight",
+      "Silver"
+    ],
+    "image": "/images/placeholder-laptop.svg",
+    "images": [
+      "/images/placeholder-laptop.svg"
+    ],
+    "featured": true,
+    "inStock": true,
+    "tagline": "Lean. Mean. M3 Machine.",
+    "overview": "Ultra-thin 15-inch Liquid Retina display with M3 silicon.",
+    "priceNote": "?1,850,000 promo today",
+    "specs": {
+      "processor": "Apple M3 Chip (8-core CPU, 10-core GPU)",
+      "display": "15.3-inch Liquid Retina with True Tone",
+      "ram": "16GB Unified Memory",
+      "battery": "Up to 18 hours battery life",
+      "ports": "MagSafe 3, 2x Thunderbolt / USB 4, 3.5mm jack",
+      "os": "macOS Sonoma"
+    },
+    "id": 5
+  },
+  {
     "name": "Google Pixel 9 Pro Fold",
     "slug": "google-pixel-9-pro-fold",
     "brand": "Google",

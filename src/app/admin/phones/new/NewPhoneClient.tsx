@@ -74,7 +74,7 @@ export default function NewPhoneClient() {
     image: "",
     priceNote: "Price on daily request (market rate)",
     inStock: true,
-    featured: false,
+    featured: true,
     tagline: "",
     overview: "",
     // Specs
@@ -220,8 +220,12 @@ export default function NewPhoneClient() {
       const data = await res.json();
 
       if (!res.ok) {
-        const errorMsg = data.error || "Failed to add device listing";
-        setError(errorMsg);
+        if (res.status === 401) {
+          setError("Your admin session has expired. Please log in again.");
+        } else {
+          const errorMsg = data.error || "Failed to add device listing";
+          setError(errorMsg);
+        }
         setLoading(false);
         if (typeof window !== "undefined") {
           window.scrollTo({ top: 0, behavior: "smooth" });
@@ -229,10 +233,11 @@ export default function NewPhoneClient() {
         return;
       }
 
+      const redirectUrl = `/admin/phones?added=${encodeURIComponent(payload.name)}&t=${Date.now()}`;
       if (typeof window !== "undefined") {
-        window.location.href = "/admin/phones";
+        window.location.href = redirectUrl;
       } else {
-        router.push("/admin/phones");
+        router.push(redirectUrl);
         router.refresh();
       }
     } catch {
