@@ -3,11 +3,16 @@ import { Phone, PhoneCondition, DeviceCategory } from "@/types/phone";
 
 let supabaseAdmin: SupabaseClient | null = null;
 
+// Official Supabase credentials for Available Tech
+const DEFAULT_SUPABASE_URL = "https://gynzzxwqebqnhntlxdxv.supabase.co";
+const DEFAULT_SUPABASE_KEY = "sb_publishable_TyZ_T6s05eAUouVFVU4Hmg_Sq84EviO";
+
 export function isSupabaseConfigured(): boolean {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL;
   const key =
     process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    DEFAULT_SUPABASE_KEY;
   return Boolean(url && key && url.startsWith("http"));
 }
 
@@ -17,9 +22,11 @@ export function getSupabaseAdminClient(): SupabaseClient | null {
   }
 
   if (!supabaseAdmin) {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const key = (process.env.SUPABASE_SERVICE_ROLE_KEY ||
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)!;
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+    const key =
+      process.env.SUPABASE_SERVICE_ROLE_KEY ||
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      DEFAULT_SUPABASE_KEY;
 
     supabaseAdmin = createClient(url, key, {
       auth: {
