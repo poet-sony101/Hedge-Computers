@@ -8,6 +8,11 @@ import {
   rowToPhone,
   phoneToRow,
 } from "@/lib/supabase";
+import {
+  fetchFromCloudStore,
+  saveToCloudStore,
+  invalidateCloudCache,
+} from "@/lib/cloudStore";
 
 /**
  * Returns the writable storage path.
@@ -79,6 +84,7 @@ function writeLocalData(phones: Phone[]): boolean {
  * Invalidate Next.js cache across both server and client pages
  */
 function triggerRevalidation() {
+  invalidateCloudCache();
   try {
     revalidatePath("/", "layout");
     revalidatePath("/", "page");
@@ -149,7 +155,17 @@ export async function getAllPhones(): Promise<Phone[]> {
     }
   }
 
-  // Fallback to local data
+  // 1. Persistent Zero-Config Cloud Storage (guarantees persistence on Vercel across all lambdas & users)
+  try {
+    const cloudPhones = await fetchFromCloudStore();
+    if (cloudPhones && Array.isArray(cloudPhones) && cloudPhones.length > 0) {
+      return cloudPhones;
+    }
+  } catch (err) {
+    console.warn("[CloudStore] Read error, falling back to local storage:", err);
+  }
+
+  // 2. Fallback to local data
   return readLocalData();
 }
 
@@ -175,7 +191,7 @@ export async function getPhoneBySlug(slug: string): Promise<Phone | null> {
     }
   }
 
-  const phones = readLocalData();
+  const phones = await getAllPhones();
   return phones.find((p) => p.slug === slug) || null;
 }
 
@@ -201,7 +217,7 @@ export async function getPhoneById(id: number): Promise<Phone | null> {
     }
   }
 
-  const phones = readLocalData();
+  const phones = await getAllPhones();
   return phones.find((p) => p.id === id) || null;
 }
 
@@ -252,8 +268,8 @@ export async function createPhone(
     }
   }
 
-  // Local fallback
-  const phones = readLocalData();
+  // Cloud Store & Local fallback
+  const phones = await getAllPhones();
   const nextId =
     phones.length > 0 ? Math.max(...phones.map((p) => p.id)) + 1 : 1;
 
@@ -268,13 +284,11 @@ export async function createPhone(
     slug,
   };
 
-  phones.unshift(newPhone);
-  const success = writeLocalData(phones);
-  if (!success) {
-    throw new Error(
-      "Storage write failed (serverless filesystem is read-only). Please connect Supabase in Vercel settings."
-    );
-  }
+  const updatedPhones = [newPhone, ...phones.filter((p) => p.id !== nextId)];
+
+  // Save to persistent cloud store
+  await saveToCloudStore(updatedPhones);
+  writeLocalData(updatedPhones);
   triggerRevalidation();
   return newPhone;
 }
@@ -312,8 +326,8 @@ export async function updatePhone(
     }
   }
 
-  // Local fallback
-  const phones = readLocalData();
+  // Cloud Store & Local fallback
+  const phones = await getAllPhones();
   const index = phones.findIndex((p) => p.id === id);
   if (index === -1) {
     return { success: false, error: "Device not found in catalog" };
@@ -325,14 +339,11 @@ export async function updatePhone(
     id,
   };
 
-  phones[index] = updated;
-  const success = writeLocalData(phones);
-  if (!success) {
-    return {
-      success: false,
-      error: "Storage write failed (serverless filesystem is read-only). Please connect Supabase in Vercel settings.",
-    };
-  }
+  const updatedPhones = [...phones];
+  updatedPhones[index] = updated;
+
+  await saveToCloudStore(updatedPhones);
+  writeLocalData(updatedPhones);
 
   triggerRevalidation();
   return { success: true, phone: updated };
@@ -368,21 +379,17 @@ export async function deletePhone(
     }
   }
 
-  // Local fallback
-  const phones = readLocalData();
+  // Cloud Store & Local fallback
+  const phones = await getAllPhones();
   const index = phones.findIndex((p) => p.id === id);
   if (index === -1) {
     return { success: false, error: "Device not found in catalog" };
   }
 
-  phones.splice(index, 1);
-  const success = writeLocalData(phones);
-  if (!success) {
-    return {
-      success: false,
-      error: "Storage write failed (serverless filesystem is read-only). Please connect Supabase in Vercel settings.",
-    };
-  }
+  const updatedPhones = phones.filter((p) => p.id !== id);
+
+  await saveToCloudStore(updatedPhones);
+  writeLocalData(updatedPhones);
 
   triggerRevalidation();
   return { success: true };

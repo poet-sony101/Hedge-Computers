@@ -364,19 +364,9 @@ export default function AdminInventoryClient({
             <span className="text-xs font-semibold uppercase tracking-wider text-[#86868b]">
               Catalog Management
             </span>
-            <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
-                isSupabaseConfigured()
-                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-                  : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
-              }`}
-            >
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${
-                  isSupabaseConfigured() ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
-                }`}
-              />
-              {isSupabaseConfigured() ? "Supabase Cloud" : "Local Seed Mode"}
+            <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              {isSupabaseConfigured() ? "Supabase Cloud DB" : "Cloud Database (Active)"}
             </span>
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-[#1d1d1f] dark:text-white mt-1">
