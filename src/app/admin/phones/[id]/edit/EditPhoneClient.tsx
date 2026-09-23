@@ -209,7 +209,7 @@ export default function EditPhoneClient({ phone }: EditPhoneClientProps) {
       }
     } catch (err) {
       console.error("Save error:", err);
-      setError("An unexpected network error occurred while saving modifications. Please verify the dev server is active and try again.");
+      setError("An unexpected network error occurred while saving modifications. Please verify your connection or database credentials and try again.");
       setLoading(false);
       if (typeof window !== "undefined") {
         window.scrollTo({ top: 0, behavior: "smooth" });

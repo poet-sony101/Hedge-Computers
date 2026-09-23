@@ -19,6 +19,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { Phone } from "@/types/phone";
+import { isSupabaseConfigured } from "@/lib/supabase";
 
 interface AdminInventoryClientProps {
   initialPhones: Phone[];
@@ -167,9 +168,12 @@ export default function AdminInventoryClient({
     });
   }, [phones, search, categoryFilter, brandFilter, statusFilter]);
 
+  const [actionError, setActionError] = useState<string | null>(null);
+
   // Toggle In Stock
   const handleToggleStock = async (phone: Phone) => {
     setUpdatingId(phone.id);
+    setActionError(null);
     const newStatus = !phone.inStock;
 
     try {
@@ -179,13 +183,25 @@ export default function AdminInventoryClient({
         body: JSON.stringify({ inStock: newStatus }),
       });
 
+      if (res.status === 401) {
+        setActionError("Your admin session has expired. Redirecting to login...");
+        setTimeout(() => {
+          window.location.href = "/admin/login";
+        }, 1500);
+        return;
+      }
+
       if (res.ok) {
         setPhones((prev) =>
           prev.map((p) => (p.id === phone.id ? { ...p, inStock: newStatus } : p))
         );
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setActionError(data.error || "Failed to update stock status");
       }
     } catch (err) {
       console.error("Failed to toggle stock", err);
+      setActionError("Network error while updating stock status. Please try again.");
     } finally {
       setUpdatingId(null);
     }
@@ -194,6 +210,7 @@ export default function AdminInventoryClient({
   // Toggle Featured
   const handleToggleFeatured = async (phone: Phone) => {
     setUpdatingId(phone.id);
+    setActionError(null);
     const newFeatured = !phone.featured;
 
     try {
@@ -203,15 +220,27 @@ export default function AdminInventoryClient({
         body: JSON.stringify({ featured: newFeatured }),
       });
 
+      if (res.status === 401) {
+        setActionError("Your admin session has expired. Redirecting to login...");
+        setTimeout(() => {
+          window.location.href = "/admin/login";
+        }, 1500);
+        return;
+      }
+
       if (res.ok) {
         setPhones((prev) =>
           prev.map((p) =>
             p.id === phone.id ? { ...p, featured: newFeatured } : p
           )
         );
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setActionError(data.error || "Failed to update featured spotlight status");
       }
     } catch (err) {
       console.error("Failed to toggle featured", err);
+      setActionError("Network error while updating featured status. Please try again.");
     } finally {
       setUpdatingId(null);
     }
@@ -223,12 +252,21 @@ export default function AdminInventoryClient({
     if (!editingPricePhone) return;
 
     setPriceSaveLoading(true);
+    setActionError(null);
     try {
       const res = await fetch(`/api/admin/phones/${editingPricePhone.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ priceNote: newPriceNote }),
       });
+
+      if (res.status === 401) {
+        setActionError("Your admin session has expired. Redirecting to login...");
+        setTimeout(() => {
+          window.location.href = "/admin/login";
+        }, 1500);
+        return;
+      }
 
       if (res.ok) {
         setPhones((prev) =>
@@ -237,9 +275,13 @@ export default function AdminInventoryClient({
           )
         );
         setEditingPricePhone(null);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setActionError(data.error || "Failed to update price note");
       }
     } catch (err) {
       console.error("Failed to update price note", err);
+      setActionError("Network error while saving price note. Please try again.");
     } finally {
       setPriceSaveLoading(false);
     }
@@ -250,17 +292,30 @@ export default function AdminInventoryClient({
     if (!deletingPhone) return;
 
     setDeleteLoading(true);
+    setActionError(null);
     try {
       const res = await fetch(`/api/admin/phones/${deletingPhone.id}`, {
         method: "DELETE",
       });
 
+      if (res.status === 401) {
+        setActionError("Your admin session has expired. Redirecting to login...");
+        setTimeout(() => {
+          window.location.href = "/admin/login";
+        }, 1500);
+        return;
+      }
+
       if (res.ok) {
         setPhones((prev) => prev.filter((p) => p.id !== deletingPhone.id));
         setDeletingPhone(null);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setActionError(data.error || "Failed to delete device from catalog");
       }
     } catch (err) {
       console.error("Failed to delete device", err);
+      setActionError("Network error while deleting device. Please try again.");
     } finally {
       setDeleteLoading(false);
     }
@@ -285,12 +340,45 @@ export default function AdminInventoryClient({
         </div>
       )}
 
+      {/* Action Error Banner */}
+      {actionError && (
+        <div className="flex items-center justify-between gap-3 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs font-semibold text-rose-800 dark:text-rose-300 shadow-sm transition">
+          <div className="flex items-center gap-2.5">
+            <AlertTriangle className="h-4 w-4 shrink-0 text-rose-600 dark:text-rose-400" />
+            <span>{actionError}</span>
+          </div>
+          <button
+            onClick={() => setActionError(null)}
+            className="text-rose-700 dark:text-rose-400 hover:text-rose-950 dark:hover:text-white p-1 rounded-full transition"
+            title="Dismiss error"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#86868b]">
-            Catalog Management
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#86868b]">
+              Catalog Management
+            </span>
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
+                isSupabaseConfigured()
+                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                  : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+              }`}
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  isSupabaseConfigured() ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+                }`}
+              />
+              {isSupabaseConfigured() ? "Supabase Cloud" : "Local Seed Mode"}
+            </span>
+          </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-[#1d1d1f] dark:text-white mt-1">
             Device Inventory
           </h1>

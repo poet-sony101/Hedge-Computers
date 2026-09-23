@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { isAdminAuthenticated } from "@/lib/adminAuth";
 import { getAllPhones } from "@/services/phoneService";
+import { isSupabaseConfigured } from "@/lib/supabase";
 
 export const metadata = {
   title: "Admin Dashboard | Available Tech",
@@ -26,6 +27,7 @@ export default async function AdminDashboardPage() {
   }
 
   const phones = await getAllPhones();
+  const isDbConnected = isSupabaseConfigured();
 
   const total = phones.length;
   const inStock = phones.filter((p) => p.inStock).length;
@@ -45,9 +47,25 @@ export default async function AdminDashboardPage() {
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#86868b]">
-            Overview
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#86868b]">
+              Overview
+            </span>
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
+                isDbConnected
+                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                  : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+              }`}
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  isDbConnected ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+                }`}
+              />
+              {isDbConnected ? "Supabase Cloud DB" : "Local Seed Mode"}
+            </span>
+          </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-[#1d1d1f] dark:text-white mt-1">
             Inventory & Operations
           </h1>

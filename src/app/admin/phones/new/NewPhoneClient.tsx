@@ -242,7 +242,7 @@ export default function NewPhoneClient() {
       }
     } catch (err) {
       console.error("Submit error:", err);
-      setError("An unexpected network error occurred while publishing device. Please verify the dev server is active and try again.");
+      setError("An unexpected network error occurred while publishing device. Please verify your connection or database credentials and try again.");
       setLoading(false);
       if (typeof window !== "undefined") {
         window.scrollTo({ top: 0, behavior: "smooth" });

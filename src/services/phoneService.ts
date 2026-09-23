@@ -3,7 +3,6 @@ import path from "path";
 import { revalidatePath } from "next/cache";
 import { Phone } from "@/types/phone";
 import {
-  isSupabaseConfigured,
   getSupabaseAdminClient,
   rowToPhone,
   phoneToRow,
