@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { isAdminAuthenticated } from "@/lib/adminAuth";
+import { getSupabaseAdminClient } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -9,7 +10,10 @@ export const maxDuration = 60;
 export async function POST(req: NextRequest) {
   const authenticated = await isAdminAuthenticated();
   if (!authenticated) {
-    return NextResponse.json({ error: "Unauthorized. Please log in to admin." }, { status: 401 });
+    return NextResponse.json(
+      { error: "Unauthorized. Please log in to admin." },
+      { status: 401 }
+    );
   }
 
   try {
@@ -17,7 +21,10 @@ export async function POST(req: NextRequest) {
     const fileEntry = formData.get("file");
 
     if (!fileEntry || typeof fileEntry === "string") {
-      return NextResponse.json({ error: "No file provided in upload request" }, { status: 400 });
+      return NextResponse.json(
+        { error: "No file provided in upload request" },
+        { status: 400 }
+      );
     }
 
     const file = fileEntry as File;
@@ -29,7 +36,10 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(arrayBuf);
 
     if (buffer.length === 0) {
-      return NextResponse.json({ error: "Uploaded file is empty" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Uploaded file is empty" },
+        { status: 400 }
+      );
     }
 
     // Determine clean file extension
@@ -42,27 +52,69 @@ export async function POST(req: NextRequest) {
       else cleanExt = ".jpg";
     }
 
-    // Attempt to write file to public/uploads on disk
+    const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+    const filename = `product-${uniqueSuffix}${cleanExt}`;
+
+    // 1. Prioritize Cloud Storage (Supabase Storage) when configured
+    const supabase = getSupabaseAdminClient();
+    if (supabase) {
+      try {
+        const storagePath = `products/${filename}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("device-photos")
+          .upload(storagePath, buffer, {
+            contentType: fileType,
+            upsert: true,
+          });
+
+        if (!uploadError && uploadData) {
+          const { data: urlData } = supabase.storage
+            .from("device-photos")
+            .getPublicUrl(storagePath);
+
+          if (urlData?.publicUrl) {
+            return NextResponse.json(
+              { success: true, url: urlData.publicUrl },
+              { status: 201 }
+            );
+          }
+        }
+        console.warn("[Supabase Storage] Upload returned error:", uploadError);
+      } catch (storageErr) {
+        console.warn("[Supabase Storage] Upload exception:", storageErr);
+      }
+    }
+
+    // 2. Local disk write (used for local development)
     try {
       const uploadsDir = path.join(process.cwd(), "public", "uploads");
       if (!fs.existsSync(uploadsDir)) {
         fs.mkdirSync(uploadsDir, { recursive: true });
       }
 
-      const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
-      const filename = `product-${uniqueSuffix}${cleanExt}`;
       const filePath = path.join(uploadsDir, filename);
-
       fs.writeFileSync(filePath, buffer);
 
       const publicUrl = `/uploads/${filename}`;
-      return NextResponse.json({ success: true, url: publicUrl }, { status: 201 });
+      return NextResponse.json(
+        { success: true, url: publicUrl },
+        { status: 201 }
+      );
     } catch (diskWriteError) {
-      console.warn("Disk write failed, falling back to base64 data URL:", diskWriteError);
-      // Fallback: If disk is read-only or locked, return base64 Data URL so the upload NEVER fails
-      const mimeType = fileType.startsWith("image/") ? fileType : "image/jpeg";
+      console.warn(
+        "Disk write failed (expected on serverless read-only filesystem), falling back to data URL:",
+        diskWriteError
+      );
+
+      // 3. Fallback: Base64 Data URL so user is NEVER blocked on serverless
+      const mimeType = fileType.startsWith("image/")
+        ? fileType
+        : "image/jpeg";
       const base64Url = `data:${mimeType};base64,${buffer.toString("base64")}`;
-      return NextResponse.json({ success: true, url: base64Url }, { status: 201 });
+      return NextResponse.json(
+        { success: true, url: base64Url },
+        { status: 201 }
+      );
     }
   } catch (error) {
     console.error("Upload fatal error:", error);
@@ -71,7 +123,7 @@ export async function POST(req: NextRequest) {
         error:
           error instanceof Error
             ? error.message
-            : "Failed to process and upload image to disk",
+            : "Failed to process and upload image",
       },
       { status: 500 }
     );

@@ -1,5 +1,34 @@
 [
   {
+    "name": "iPhone 18 Pro Max",
+    "slug": "iphone-18-pro-max",
+    "brand": "Apple",
+    "category": "phone",
+    "storage": "256GB",
+    "storageOptions": [
+      "128GB",
+      "256GB",
+      "512GB"
+    ],
+    "condition": "UK Used",
+    "colors": [
+      "Black",
+      "Silver",
+      "Blue"
+    ],
+    "image": "/uploads/product-1790073209278-goynro.jpg",
+    "images": [
+      "/uploads/product-1790073209278-goynro.jpg"
+    ],
+    "featured": true,
+    "inStock": true,
+    "tagline": "",
+    "overview": "",
+    "priceNote": "Price on daily request (market rate)",
+    "specs": {},
+    "id": 7
+  },
+  {
     "name": "Dell XPS 16 (Touch OLED Edition)",
     "slug": "dell-xps-16",
     "brand": "Dell",
@@ -73,9 +102,9 @@
       "Porcelain",
       "Obsidian"
     ],
-    "image": "/uploads/product-1789985391131-sdyaxx.jpg",
+    "image": "/images/placeholder-phone.svg",
     "images": [
-      "/uploads/product-1789985391131-sdyaxx.jpg"
+      "/images/placeholder-phone.svg"
     ],
     "featured": true,
     "inStock": true,
@@ -129,9 +158,9 @@
       "Space Black",
       "Silver"
     ],
-    "image": "/uploads/product-1789729862266-zub2e8.jpg",
+    "image": "/images/placeholder-laptop.svg",
     "images": [
-      "/uploads/product-1789729862266-zub2e8.jpg"
+      "/images/placeholder-laptop.svg"
     ],
     "featured": true,
     "inStock": true,
