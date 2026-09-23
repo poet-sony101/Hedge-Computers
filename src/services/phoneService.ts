@@ -328,7 +328,7 @@ export async function updatePhone(
 
   // Cloud Store & Local fallback
   const phones = await getAllPhones();
-  const index = phones.findIndex((p) => p.id === id);
+  const index = phones.findIndex((p) => Number(p.id) === Number(id));
   if (index === -1) {
     return { success: false, error: "Device not found in catalog" };
   }
@@ -336,7 +336,7 @@ export async function updatePhone(
   const updated: Phone = {
     ...phones[index],
     ...data,
-    id,
+    id: Number(id),
   };
 
   const updatedPhones = [...phones];
@@ -381,12 +381,12 @@ export async function deletePhone(
 
   // Cloud Store & Local fallback
   const phones = await getAllPhones();
-  const index = phones.findIndex((p) => p.id === id);
+  const index = phones.findIndex((p) => Number(p.id) === Number(id));
   if (index === -1) {
     return { success: false, error: "Device not found in catalog" };
   }
 
-  const updatedPhones = phones.filter((p) => p.id !== id);
+  const updatedPhones = phones.filter((p) => Number(p.id) !== Number(id));
 
   await saveToCloudStore(updatedPhones);
   writeLocalData(updatedPhones);

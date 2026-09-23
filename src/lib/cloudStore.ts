@@ -35,6 +35,8 @@ export async function fetchFromCloudStore(): Promise<Phone[] | null> {
       signal: controller.signal,
       headers: {
         "Cache-Control": "no-cache",
+        "Accept": "application/json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AvailableTech/1.0",
       },
       next: { revalidate: 0 },
     });
@@ -69,6 +71,8 @@ export async function saveToCloudStore(phones: Phone[]): Promise<boolean> {
       headers: {
         "Content-Type": "application/json",
         "Security-key": CLOUD_BIN_KEY,
+        "Accept": "application/json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AvailableTech/1.0",
       },
       body: JSON.stringify(phones),
     });
