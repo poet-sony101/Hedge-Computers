@@ -177,10 +177,11 @@ export default function AdminInventoryClient({
     const newStatus = !phone.inStock;
 
     try {
-      const res = await fetch(`/api/admin/phones/${phone.id}`, {
+      const slugQuery = phone.slug ? `?slug=${encodeURIComponent(phone.slug)}` : "";
+      const res = await fetch(`/api/admin/phones/${phone.id}${slugQuery}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ inStock: newStatus }),
+        body: JSON.stringify({ inStock: newStatus, slug: phone.slug }),
       });
 
       if (res.status === 401) {
@@ -193,7 +194,11 @@ export default function AdminInventoryClient({
 
       if (res.ok) {
         setPhones((prev) =>
-          prev.map((p) => (p.id === phone.id ? { ...p, inStock: newStatus } : p))
+          prev.map((p) =>
+            Number(p.id) === Number(phone.id) || (phone.slug && p.slug === phone.slug)
+              ? { ...p, inStock: newStatus }
+              : p
+          )
         );
       } else {
         const data = await res.json().catch(() => ({}));
@@ -214,10 +219,11 @@ export default function AdminInventoryClient({
     const newFeatured = !phone.featured;
 
     try {
-      const res = await fetch(`/api/admin/phones/${phone.id}`, {
+      const slugQuery = phone.slug ? `?slug=${encodeURIComponent(phone.slug)}` : "";
+      const res = await fetch(`/api/admin/phones/${phone.id}${slugQuery}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ featured: newFeatured }),
+        body: JSON.stringify({ featured: newFeatured, slug: phone.slug }),
       });
 
       if (res.status === 401) {
@@ -231,7 +237,9 @@ export default function AdminInventoryClient({
       if (res.ok) {
         setPhones((prev) =>
           prev.map((p) =>
-            p.id === phone.id ? { ...p, featured: newFeatured } : p
+            Number(p.id) === Number(phone.id) || (phone.slug && p.slug === phone.slug)
+              ? { ...p, featured: newFeatured }
+              : p
           )
         );
       } else {
@@ -254,10 +262,13 @@ export default function AdminInventoryClient({
     setPriceSaveLoading(true);
     setActionError(null);
     try {
-      const res = await fetch(`/api/admin/phones/${editingPricePhone.id}`, {
+      const slugQuery = editingPricePhone.slug
+        ? `?slug=${encodeURIComponent(editingPricePhone.slug)}`
+        : "";
+      const res = await fetch(`/api/admin/phones/${editingPricePhone.id}${slugQuery}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceNote: newPriceNote }),
+        body: JSON.stringify({ priceNote: newPriceNote, slug: editingPricePhone.slug }),
       });
 
       if (res.status === 401) {
@@ -271,7 +282,10 @@ export default function AdminInventoryClient({
       if (res.ok) {
         setPhones((prev) =>
           prev.map((p) =>
-            p.id === editingPricePhone.id ? { ...p, priceNote: newPriceNote } : p
+            Number(p.id) === Number(editingPricePhone.id) ||
+            (editingPricePhone.slug && p.slug === editingPricePhone.slug)
+              ? { ...p, priceNote: newPriceNote }
+              : p
           )
         );
         setEditingPricePhone(null);
@@ -294,7 +308,10 @@ export default function AdminInventoryClient({
     setDeleteLoading(true);
     setActionError(null);
     try {
-      const res = await fetch(`/api/admin/phones/${deletingPhone.id}`, {
+      const slugQuery = deletingPhone.slug
+        ? `?slug=${encodeURIComponent(deletingPhone.slug)}`
+        : "";
+      const res = await fetch(`/api/admin/phones/${deletingPhone.id}${slugQuery}`, {
         method: "DELETE",
       });
 
@@ -307,7 +324,13 @@ export default function AdminInventoryClient({
       }
 
       if (res.ok) {
-        setPhones((prev) => prev.filter((p) => p.id !== deletingPhone.id));
+        setPhones((prev) =>
+          prev.filter(
+            (p) =>
+              Number(p.id) !== Number(deletingPhone.id) &&
+              p.slug !== deletingPhone.slug
+          )
+        );
         setDeletingPhone(null);
       } else {
         const data = await res.json().catch(() => ({}));

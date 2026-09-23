@@ -33,10 +33,11 @@ export async function PUT(
   }
 
   const { id } = await params;
+  const slug = req.nextUrl.searchParams.get("slug") || undefined;
 
   try {
     const body = await req.json();
-    const result = await updatePhone(Number(id), body);
+    const result = await updatePhone(Number(id), body, slug);
 
     if (!result.success) {
       return NextResponse.json(
@@ -55,7 +56,7 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: RouteParams
 ) {
   const authenticated = await isAdminAuthenticated();
@@ -64,7 +65,8 @@ export async function DELETE(
   }
 
   const { id } = await params;
-  const result = await deletePhone(Number(id));
+  const slug = req.nextUrl.searchParams.get("slug") || undefined;
+  const result = await deletePhone(Number(id), slug);
 
   if (!result.success) {
     return NextResponse.json(

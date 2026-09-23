@@ -298,98 +298,119 @@ export async function createPhone(
  */
 export async function updatePhone(
   id: number,
-  data: Partial<Phone>
+  data: Partial<Phone>,
+  slug?: string
 ): Promise<{ success: boolean; phone?: Phone; error?: string }> {
   const supabase = getSupabaseAdminClient();
+  let updatedPhone: Phone | null = null;
 
   if (supabase) {
     try {
       const row = phoneToRow(data);
       delete row.id;
 
-      const { data: updated, error } = await supabase
+      // 1. Try update by numeric ID
+      let { data: updated, error } = await supabase
         .from("devices")
         .update(row)
         .eq("id", id)
         .select("*")
         .maybeSingle();
 
-      if (!error && updated) {
-        triggerRevalidation();
-        return { success: true, phone: rowToPhone(updated) };
+      // 2. If not found by ID, try update by slug
+      const targetSlug = slug || data.slug;
+      if (!error && !updated && targetSlug) {
+        const slugRes = await supabase
+          .from("devices")
+          .update(row)
+          .eq("slug", targetSlug)
+          .select("*")
+          .maybeSingle();
+        updated = slugRes.data;
+        error = slugRes.error;
       }
-      console.error("[Supabase] updatePhone error:", error);
-      return { success: false, error: error?.message || "Failed to update in database" };
+
+      if (!error && updated) {
+        updatedPhone = rowToPhone(updated);
+      }
     } catch (e) {
       console.error("[Supabase] updatePhone exception:", e);
-      return { success: false, error: e instanceof Error ? e.message : "Database error" };
     }
   }
 
-  // Cloud Store & Local fallback
+  // Synchronize across Cloud Store & Local fallback
   const phones = await getAllPhones();
-  const index = phones.findIndex((p) => Number(p.id) === Number(id));
-  if (index === -1) {
+  const index = phones.findIndex(
+    (p) => Number(p.id) === Number(id) || (slug && p.slug === slug)
+  );
+
+  let finalPhone: Phone;
+  if (index !== -1) {
+    finalPhone = {
+      ...phones[index],
+      ...data,
+      id: Number(id),
+    };
+    phones[index] = finalPhone;
+  } else if (updatedPhone) {
+    finalPhone = updatedPhone;
+    phones.unshift(finalPhone);
+  } else {
     return { success: false, error: "Device not found in catalog" };
   }
 
-  const updated: Phone = {
-    ...phones[index],
-    ...data,
-    id: Number(id),
-  };
-
-  const updatedPhones = [...phones];
-  updatedPhones[index] = updated;
-
-  await saveToCloudStore(updatedPhones);
-  writeLocalData(updatedPhones);
+  await saveToCloudStore(phones);
+  writeLocalData(phones);
 
   triggerRevalidation();
-  return { success: true, phone: updated };
+  return { success: true, phone: updatedPhone || finalPhone };
 }
 
 /**
- * Delete a device listing
+ * Delete a device listing permanently across all layers
  */
 export async function deletePhone(
-  id: number
+  id: number,
+  slug?: string
 ): Promise<{ success: boolean; error?: string }> {
   const supabase = getSupabaseAdminClient();
 
   if (supabase) {
     try {
-      const { error, count } = await supabase
+      // 1. Try deleting by numeric ID
+      let { error, count } = await supabase
         .from("devices")
         .delete({ count: "exact" })
         .eq("id", id);
 
-      if (!error) {
-        if (count === 0) {
-          return { success: false, error: "Device not found in database" };
-        }
-        triggerRevalidation();
-        return { success: true };
+      // 2. If ID matched 0 rows and slug is provided, delete by slug
+      if (!error && count === 0 && slug) {
+        const slugRes = await supabase
+          .from("devices")
+          .delete({ count: "exact" })
+          .eq("slug", slug);
+        error = slugRes.error;
       }
-      console.error("[Supabase] deletePhone error:", error);
-      return { success: false, error: error.message };
+
+      if (error) {
+        console.error("[Supabase] deletePhone error:", error);
+      }
     } catch (e) {
       console.error("[Supabase] deletePhone exception:", e);
-      return { success: false, error: e instanceof Error ? e.message : "Database error" };
     }
   }
 
-  // Cloud Store & Local fallback
-  const phones = await getAllPhones();
-  const index = phones.findIndex((p) => Number(p.id) === Number(id));
-  if (index === -1) {
-    return { success: false, error: "Device not found in catalog" };
+  // Always purge from Cloud Store and local storage so the item NEVER returns
+  try {
+    const phones = await getAllPhones();
+    const updatedPhones = phones.filter(
+      (p) => Number(p.id) !== Number(id) && (!slug || p.slug !== slug)
+    );
+    await saveToCloudStore(updatedPhones);
+    writeLocalData(updatedPhones);
+  } catch (purgeErr) {
+    console.warn("[Storage] Purge error:", purgeErr);
   }
-
-  const updatedPhones = phones.filter((p) => Number(p.id) !== Number(id));
-
-  await saveToCloudStore(updatedPhones);
-  writeLocalData(updatedPhones);
 
   triggerRevalidation();
   return { success: true };

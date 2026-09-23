@@ -1,44 +1,21 @@
 [
   {
-    "name": "iPhone 18 Pro Max",
-    "slug": "iphone-18-pro-max",
+    "id": 14,
+    "slug": "macbook-pro-16-m3-max",
+    "name": "MacBook Pro 16 M3 Max",
     "brand": "Apple",
-    "category": "phone",
-    "storage": "256GB",
+    "category": "laptop",
+    "storage": "1TB SSD",
     "storageOptions": [
-      "128GB",
-      "256GB",
-      "512GB"
+      "512GB SSD",
+      "1TB SSD",
+      "2TB SSD"
     ],
     "condition": "UK Used",
     "colors": [
-      "Black",
-      "Silver",
-      "Blue"
+      "Space Black",
+      "Silver"
     ],
-    "image": "/uploads/product-1790073209278-goynro.jpg",
-    "images": [
-      "/uploads/product-1790073209278-goynro.jpg"
-    ],
-    "featured": true,
-    "inStock": true,
-    "tagline": "",
-    "overview": "",
-    "priceNote": "Price on daily request (market rate)",
-    "specs": {},
-    "id": 7
-  },
-  {
-    "name": "Dell XPS 16 (Touch OLED Edition)",
-    "slug": "dell-xps-16",
-    "brand": "Dell",
-    "category": "laptop",
-    "storage": "2TB SSD",
-    "storageOptions": [
-      "1TB SSD"
-    ],
-    "condition": "Brand New",
-    "colors": [],
     "image": "/images/placeholder-laptop.svg",
     "images": [
       "/images/placeholder-laptop.svg"
@@ -47,13 +24,68 @@
     "inStock": true,
     "tagline": "",
     "overview": "",
-    "priceNote": "₦2,950,000 updated price",
     "specs": {},
-    "id": 6
+    "priceNote": "₦3,850,000 promo today"
   },
   {
-    "name": "MacBook Air 15 M3",
+    "id": 13,
+    "slug": "samsung-galaxy-s25-ultra",
+    "name": "Samsung Galaxy S25 Ultra",
+    "brand": "Samsung",
+    "category": "phone",
+    "storage": "512GB",
+    "storageOptions": [
+      "256GB",
+      "512GB",
+      "1TB"
+    ],
+    "condition": "UK Used",
+    "colors": [
+      "Titanium Gray",
+      "Titanium Black"
+    ],
+    "image": "/images/placeholder-phone.svg",
+    "images": [
+      "/images/placeholder-phone.svg"
+    ],
+    "featured": true,
+    "inStock": true,
+    "tagline": "",
+    "overview": "",
+    "specs": {},
+    "priceNote": "Price on daily request"
+  },
+  {
+    "id": 12,
+    "slug": "google-pixel-9-pro-fold",
+    "name": "Google Pixel 9 Pro Fold",
+    "brand": "Google",
+    "category": "phone",
+    "storage": "256GB",
+    "storageOptions": [
+      "256GB",
+      "512GB"
+    ],
+    "condition": "UK Used",
+    "colors": [
+      "Porcelain",
+      "Obsidian"
+    ],
+    "image": "/images/placeholder-phone.svg",
+    "images": [
+      "/images/placeholder-phone.svg"
+    ],
+    "featured": true,
+    "inStock": true,
+    "tagline": "",
+    "overview": "",
+    "specs": {},
+    "priceNote": "Price on daily request"
+  },
+  {
+    "id": 11,
     "slug": "macbook-air-15-m3",
+    "name": "MacBook Air 15 M3",
     "brand": "Apple",
     "category": "laptop",
     "storage": "512GB SSD",
@@ -76,88 +108,28 @@
     "inStock": true,
     "tagline": "Lean. Mean. M3 Machine.",
     "overview": "Ultra-thin 15-inch Liquid Retina display with M3 silicon.",
-    "priceNote": "?1,850,000 promo today",
     "specs": {
-      "processor": "Apple M3 Chip (8-core CPU, 10-core GPU)",
-      "display": "15.3-inch Liquid Retina with True Tone",
+      "os": "macOS Sonoma",
       "ram": "16GB Unified Memory",
-      "battery": "Up to 18 hours battery life",
       "ports": "MagSafe 3, 2x Thunderbolt / USB 4, 3.5mm jack",
-      "os": "macOS Sonoma"
+      "battery": "Up to 18 hours battery life",
+      "display": "15.3-inch Liquid Retina with True Tone",
+      "processor": "Apple M3 Chip (8-core CPU, 10-core GPU)"
     },
-    "id": 5
+    "priceNote": "?1,850,000 promo today"
   },
   {
-    "name": "Google Pixel 9 Pro Fold",
-    "slug": "google-pixel-9-pro-fold",
-    "brand": "Google",
-    "category": "phone",
-    "storage": "256GB",
-    "storageOptions": [
-      "256GB",
-      "512GB"
-    ],
-    "condition": "UK Used",
-    "colors": [
-      "Porcelain",
-      "Obsidian"
-    ],
-    "image": "/images/placeholder-phone.svg",
-    "images": [
-      "/images/placeholder-phone.svg"
-    ],
-    "featured": true,
-    "inStock": true,
-    "tagline": "",
-    "overview": "",
-    "priceNote": "Price on daily request",
-    "specs": {},
-    "id": 4
-  },
-  {
-    "name": "Samsung Galaxy S25 Ultra",
-    "slug": "samsung-galaxy-s25-ultra",
-    "brand": "Samsung",
-    "category": "phone",
-    "storage": "512GB",
-    "storageOptions": [
-      "256GB",
-      "512GB",
-      "1TB"
-    ],
-    "condition": "UK Used",
-    "colors": [
-      "Titanium Gray",
-      "Titanium Black"
-    ],
-    "image": "/images/placeholder-phone.svg",
-    "images": [
-      "/images/placeholder-phone.svg"
-    ],
-    "featured": true,
-    "inStock": true,
-    "tagline": "",
-    "overview": "",
-    "priceNote": "Price on daily request",
-    "specs": {},
-    "id": 3
-  },
-  {
-    "name": "MacBook Pro 16 M3 Max",
-    "slug": "macbook-pro-16-m3-max",
-    "brand": "Apple",
+    "id": 10,
+    "slug": "dell-xps-16",
+    "name": "Dell XPS 16 (Touch OLED Edition)",
+    "brand": "Dell",
     "category": "laptop",
-    "storage": "1TB SSD",
+    "storage": "2TB SSD",
     "storageOptions": [
-      "512GB SSD",
-      "1TB SSD",
-      "2TB SSD"
+      "1TB SSD"
     ],
-    "condition": "UK Used",
-    "colors": [
-      "Space Black",
-      "Silver"
-    ],
+    "condition": "Brand New",
+    "colors": [],
     "image": "/images/placeholder-laptop.svg",
     "images": [
       "/images/placeholder-laptop.svg"
@@ -166,34 +138,36 @@
     "inStock": true,
     "tagline": "",
     "overview": "",
-    "priceNote": "₦3,850,000 promo today",
     "specs": {},
-    "id": 2
+    "priceNote": "₦2,950,000 updated price"
   },
   {
-    "name": "iPhone 16 Pro Max",
-    "slug": "iphone-16-pro-max",
+    "id": 9,
+    "slug": "iphone-18-pro-max",
+    "name": "iPhone 18 Pro Max",
     "brand": "Apple",
     "category": "phone",
     "storage": "256GB",
     "storageOptions": [
       "128GB",
-      "256GB"
+      "256GB",
+      "512GB"
     ],
     "condition": "UK Used",
     "colors": [
-      "Black"
+      "Black",
+      "Silver",
+      "Blue"
     ],
-    "image": "/images/placeholder-phone.svg",
+    "image": "/uploads/product-1790073209278-goynro.jpg",
     "images": [
-      "/images/placeholder-phone.svg"
+      "/uploads/product-1790073209278-goynro.jpg"
     ],
-    "featured": false,
+    "featured": true,
     "inStock": true,
     "tagline": "",
     "overview": "",
-    "priceNote": "Price on request",
     "specs": {},
-    "id": 1
+    "priceNote": "Price on daily request (market rate)"
   }
 ]
