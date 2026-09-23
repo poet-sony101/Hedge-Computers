@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import os from "os";
 import { revalidatePath } from "next/cache";
 import { Phone } from "@/types/phone";
 import {
@@ -8,15 +9,43 @@ import {
   phoneToRow,
 } from "@/lib/supabase";
 
-const DATA_FILE_PATH = path.join(process.cwd(), "src", "data", "phones.json");
+/**
+ * Returns the writable storage path.
+ * On serverless platforms (e.g. Vercel), project files are read-only.
+ * Using os.tmpdir() allows local seed mode to write without crashing with EROFS.
+ */
+function getLocalDataPath(): string {
+  const bundlePath = path.join(process.cwd(), "src", "data", "phones.json");
+
+  // In production or Vercel serverless environments, project root is read-only
+  if (process.env.VERCEL || process.env.NODE_ENV === "production") {
+    try {
+      const tmpPath = path.join(os.tmpdir(), "available_tech_phones.json");
+      if (!fs.existsSync(tmpPath)) {
+        if (fs.existsSync(bundlePath)) {
+          fs.copyFileSync(bundlePath, tmpPath);
+        } else {
+          fs.writeFileSync(tmpPath, "[]", "utf-8");
+        }
+      }
+      return tmpPath;
+    } catch (err) {
+      console.warn("[Storage] Fallback to bundlePath:", err);
+      return bundlePath;
+    }
+  }
+
+  return bundlePath;
+}
 
 /**
  * Local file-based reader (fallback / seeding source)
  */
 function readLocalData(): Phone[] {
   try {
-    if (fs.existsSync(DATA_FILE_PATH)) {
-      const content = fs.readFileSync(DATA_FILE_PATH, "utf-8");
+    const filePath = getLocalDataPath();
+    if (fs.existsSync(filePath)) {
+      const content = fs.readFileSync(filePath, "utf-8");
       const parsed = JSON.parse(content);
       if (Array.isArray(parsed)) {
         return parsed;
@@ -33,14 +62,15 @@ function readLocalData(): Phone[] {
  */
 function writeLocalData(phones: Phone[]): boolean {
   try {
-    const dir = path.dirname(DATA_FILE_PATH);
+    const filePath = getLocalDataPath();
+    const dir = path.dirname(filePath);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(phones, null, 2), "utf-8");
+    fs.writeFileSync(filePath, JSON.stringify(phones, null, 2), "utf-8");
     return true;
   } catch (error) {
-    console.error("Error writing to phones.json:", error);
+    console.error("Error writing to phones storage:", error);
     return false;
   }
 }
@@ -84,7 +114,6 @@ async function autoSeedSupabaseIfEmpty(supabase: ReturnType<typeof getSupabaseAd
         console.log(`[Supabase] Auto-seeding ${localPhones.length} devices into Supabase...`);
         const rowsToInsert = localPhones.map((p) => {
           const row = phoneToRow(p);
-          // Omit id so Supabase serial generates sequence
           delete row.id;
           return row;
         });
@@ -182,7 +211,6 @@ export async function getPhoneById(id: number): Promise<Phone | null> {
 export async function createPhone(
   data: Omit<Phone, "id">
 ): Promise<Phone> {
-  // Normalize slug
   let slug =
     data.slug ||
     data.name
@@ -195,7 +223,6 @@ export async function createPhone(
 
   if (supabase) {
     try {
-      // Check for slug collision
       const { data: existing } = await supabase
         .from("devices")
         .select("id")
@@ -218,8 +245,10 @@ export async function createPhone(
         return rowToPhone(created);
       }
       console.error("[Supabase] createPhone error:", error);
+      throw new Error(error?.message || "Failed to create device in Supabase database");
     } catch (e) {
       console.error("[Supabase] createPhone exception:", e);
+      throw e instanceof Error ? e : new Error("Failed to create device in Supabase database");
     }
   }
 
@@ -240,7 +269,12 @@ export async function createPhone(
   };
 
   phones.unshift(newPhone);
-  writeLocalData(phones);
+  const success = writeLocalData(phones);
+  if (!success) {
+    throw new Error(
+      "Storage write failed (serverless filesystem is read-only). Please connect Supabase in Vercel settings."
+    );
+  }
   triggerRevalidation();
   return newPhone;
 }
@@ -251,35 +285,39 @@ export async function createPhone(
 export async function updatePhone(
   id: number,
   data: Partial<Phone>
-): Promise<Phone | null> {
+): Promise<{ success: boolean; phone?: Phone; error?: string }> {
   const supabase = getSupabaseAdminClient();
 
   if (supabase) {
     try {
       const row = phoneToRow(data);
-      delete row.id; // Protect primary key
+      delete row.id;
 
       const { data: updated, error } = await supabase
         .from("devices")
         .update(row)
         .eq("id", id)
         .select("*")
-        .single();
+        .maybeSingle();
 
       if (!error && updated) {
         triggerRevalidation();
-        return rowToPhone(updated);
+        return { success: true, phone: rowToPhone(updated) };
       }
       console.error("[Supabase] updatePhone error:", error);
+      return { success: false, error: error?.message || "Failed to update in database" };
     } catch (e) {
       console.error("[Supabase] updatePhone exception:", e);
+      return { success: false, error: e instanceof Error ? e.message : "Database error" };
     }
   }
 
   // Local fallback
   const phones = readLocalData();
   const index = phones.findIndex((p) => p.id === id);
-  if (index === -1) return null;
+  if (index === -1) {
+    return { success: false, error: "Device not found in catalog" };
+  }
 
   const updated: Phone = {
     ...phones[index],
@@ -288,41 +326,64 @@ export async function updatePhone(
   };
 
   phones[index] = updated;
-  writeLocalData(phones);
+  const success = writeLocalData(phones);
+  if (!success) {
+    return {
+      success: false,
+      error: "Storage write failed (serverless filesystem is read-only). Please connect Supabase in Vercel settings.",
+    };
+  }
+
   triggerRevalidation();
-  return updated;
+  return { success: true, phone: updated };
 }
 
 /**
  * Delete a device listing
  */
-export async function deletePhone(id: number): Promise<boolean> {
+export async function deletePhone(
+  id: number
+): Promise<{ success: boolean; error?: string }> {
   const supabase = getSupabaseAdminClient();
 
   if (supabase) {
     try {
-      const { error } = await supabase
+      const { error, count } = await supabase
         .from("devices")
-        .delete()
+        .delete({ count: "exact" })
         .eq("id", id);
 
       if (!error) {
+        if (count === 0) {
+          return { success: false, error: "Device not found in database" };
+        }
         triggerRevalidation();
-        return true;
+        return { success: true };
       }
       console.error("[Supabase] deletePhone error:", error);
+      return { success: false, error: error.message };
     } catch (e) {
       console.error("[Supabase] deletePhone exception:", e);
+      return { success: false, error: e instanceof Error ? e.message : "Database error" };
     }
   }
 
   // Local fallback
   const phones = readLocalData();
   const index = phones.findIndex((p) => p.id === id);
-  if (index === -1) return false;
+  if (index === -1) {
+    return { success: false, error: "Device not found in catalog" };
+  }
 
   phones.splice(index, 1);
   const success = writeLocalData(phones);
+  if (!success) {
+    return {
+      success: false,
+      error: "Storage write failed (serverless filesystem is read-only). Please connect Supabase in Vercel settings.",
+    };
+  }
+
   triggerRevalidation();
-  return success;
+  return { success: true };
 }

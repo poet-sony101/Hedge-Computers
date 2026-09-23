@@ -46,9 +46,9 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ phone: newPhone }, { status: 201 });
-  } catch {
+  } catch (error) {
     return NextResponse.json(
-      { error: "Failed to create phone listing" },
+      { error: error instanceof Error ? error.message : "Failed to create phone listing" },
       { status: 500 }
     );
   }

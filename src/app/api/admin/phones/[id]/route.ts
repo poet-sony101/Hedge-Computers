@@ -36,13 +36,16 @@ export async function PUT(
 
   try {
     const body = await req.json();
-    const updated = await updatePhone(Number(id), body);
+    const result = await updatePhone(Number(id), body);
 
-    if (!updated) {
-      return NextResponse.json({ error: "Phone not found" }, { status: 404 });
+    if (!result.success) {
+      return NextResponse.json(
+        { error: result.error || "Failed to update phone" },
+        { status: 400 }
+      );
     }
 
-    return NextResponse.json({ phone: updated });
+    return NextResponse.json({ phone: result.phone });
   } catch {
     return NextResponse.json(
       { error: "Failed to update phone" },
@@ -61,10 +64,13 @@ export async function DELETE(
   }
 
   const { id } = await params;
-  const success = await deletePhone(Number(id));
+  const result = await deletePhone(Number(id));
 
-  if (!success) {
-    return NextResponse.json({ error: "Phone not found" }, { status: 404 });
+  if (!result.success) {
+    return NextResponse.json(
+      { error: result.error || "Failed to delete phone" },
+      { status: 400 }
+    );
   }
 
   return NextResponse.json({ success: true });
