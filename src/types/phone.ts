@@ -1,6 +1,11 @@
 export type DeviceCategory = "phone" | "laptop" | "gadget" | "accessory";
 
-export type PhoneCondition = "Brand New" | "UK Used" | "Open Box";
+export type PhoneCondition =
+  | "Brand New"
+  | "UK Used"
+  | "Open Box"
+  | "USA Used"
+  | "USA Used (Grade A+)";
 
 export interface PhoneSpecs {
   // Common / Phone Specs

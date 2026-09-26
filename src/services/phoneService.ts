@@ -25,7 +25,7 @@ function getLocalDataPath(): string {
   // In production or Vercel serverless environments, project root is read-only
   if (process.env.VERCEL || process.env.NODE_ENV === "production") {
     try {
-      const tmpPath = path.join(os.tmpdir(), "available_tech_phones.json");
+      const tmpPath = path.join(os.tmpdir(), "hedge_computers_inventory.json");
       if (!fs.existsSync(tmpPath)) {
         if (fs.existsSync(bundlePath)) {
           fs.copyFileSync(bundlePath, tmpPath);

@@ -61,6 +61,10 @@ export interface CustomPhoneRequestParams {
   category?: "Smartphone" | "Laptop" | "Gadget" | "Accessory";
   brand: string;
   model: string;
+  orderType?: "Single Unit" | "Bulk Supply (Wholesale)";
+  quantity?: string;
+  organization?: string;
+  destinationState?: string;
   storage?: string;
   ram?: string;
   processor?: string;
@@ -73,17 +77,21 @@ export interface CustomPhoneRequestParams {
 export function getCustomPhoneRequestUrl(params: CustomPhoneRequestParams): string {
   const phone = formatWhatsAppNumber(SITE_CONFIG.phone);
   const deviceType = params.category || "Product";
+  const orderType = params.orderType || "Single Unit";
+  const quantity = params.quantity || "1 Unit";
 
   const lines = [
     `Hello ${SITE_CONFIG.name}, ⚡`,
     "",
-    `I would like to make a *Custom Request* for a ${deviceType} not currently in the catalog:`,
+    `I would like to make a *Custom Request / Quote* for ${deviceType}s:`,
     "",
-    `• *Product:* ${params.brand} ${params.model}`,
+    `• *Order Type:* ${orderType}`,
+    `• *Quantity Needed:* ${quantity}`,
+    `• *Product / Model:* ${params.brand} ${params.model}`,
   ];
 
   if (params.storage) {
-    lines.push(`• *Capacity / Size:* ${params.storage}`);
+    lines.push(`• *Capacity / SSD:* ${params.storage}`);
   }
 
   if (params.ram) {
@@ -101,15 +109,27 @@ export function getCustomPhoneRequestUrl(params: CustomPhoneRequestParams): stri
   }
 
   if (params.customerName) {
-    lines.push(`• *Requested by:* ${params.customerName}`);
+    lines.push(`• *Contact Name:* ${params.customerName}`);
+  }
+
+  if (params.organization) {
+    lines.push(`• *Company / Organization:* ${params.organization}`);
+  }
+
+  if (params.destinationState) {
+    lines.push(`• *Delivery Destination:* ${params.destinationState}`);
   }
 
   if (params.notes) {
-    lines.push(`• *Additional Notes:* ${params.notes}`);
+    lines.push(`• *Additional Specs / Notes:* ${params.notes}`);
   }
 
   lines.push("");
-  lines.push("Can you check if this item can be sourced and what today's best price is?");
+  if (orderType.includes("Bulk")) {
+    lines.push("Please provide today's best wholesale / fleet pricing and availability for direct pickup at 12 Oshitelu Street, Computer Village or delivery.");
+  } else {
+    lines.push("Please confirm availability and today's sharpest rate for this machine.");
+  }
 
   const message = lines.join("\n");
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
@@ -117,6 +137,6 @@ export function getCustomPhoneRequestUrl(params: CustomPhoneRequestParams): stri
 
 export function getGeneralInquiryUrl(): string {
   const phone = formatWhatsAppNumber(SITE_CONFIG.phone);
-  const message = `Hello ${SITE_CONFIG.name}! I would like to inquire about your available technology products.`;
+  const message = `Hello ${SITE_CONFIG.name}! I would like to inquire about your computers, laptops, and gadgets inventory.`;
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }

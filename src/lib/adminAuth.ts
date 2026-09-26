@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 
-export const ADMIN_COOKIE_NAME = "ndt_admin_session";
+export const ADMIN_COOKIE_NAME = "hedge_admin_session";
 export const DEFAULT_ADMIN_PASSCODE =
-  process.env.ADMIN_PASSCODE || "newdawn2026";
+  process.env.ADMIN_PASSCODE || "hedge2026";
 
 export async function isAdminAuthenticated(): Promise<boolean> {
   const cookieStore = await cookies();

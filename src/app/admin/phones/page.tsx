@@ -5,7 +5,7 @@ import { getAllPhones } from "@/services/phoneService";
 import AdminInventoryClient from "./AdminInventoryClient";
 
 export const metadata = {
-  title: "Manage Inventory | Admin | Available Tech",
+  title: "Manage Inventory | Admin | Hedge Computers",
 };
 
 export const dynamic = "force-dynamic";

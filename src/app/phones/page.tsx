@@ -5,7 +5,7 @@ import PhoneCatalogClient from "./PhoneCatalogClient";
 import { getAllPhones } from "@/services/phoneService";
 
 export const metadata = {
-  title: "Browse Smartphones | Available Tech",
+  title: "Browse Smartphones & Gadgets | Hedge Computers",
   description:
     "Explore our verified smartphone catalog from Apple, Samsung, Google, and more. Inquire for today's market price directly on WhatsApp.",
 };

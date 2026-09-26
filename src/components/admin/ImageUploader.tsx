@@ -596,7 +596,7 @@ export default function ImageUploader({
             <div className="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/10">
               <div>
                 <h3 className="text-sm font-bold text-[#1d1d1f] dark:text-white">
-                  Available Tech Picture Library
+                  Hedge Computers Picture Library
                 </h3>
                 <p className="text-xs text-[#86868b]">
                   Select an authentic device photo or official vector silhouette.

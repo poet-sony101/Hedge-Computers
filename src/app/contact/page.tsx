@@ -15,9 +15,9 @@ import { SITE_CONFIG } from "@/constants/site";
 import { getGeneralInquiryUrl } from "@/utils/whatsapp";
 
 export const metadata = {
-  title: "Contact & Location | Available Tech",
+  title: "Contact & Location | Hedge Computers",
   description:
-    "Contact Available Tech. Connect via WhatsApp or phone call for immediate price inquiries and device delivery in Lagos and nationwide.",
+    "Contact Hedge Computers. Connect via WhatsApp or phone call for immediate price inquiries and laptop or smartphone delivery in Lagos and nationwide.",
 };
 
 const FAQS = [
@@ -169,7 +169,7 @@ export default function ContactPage() {
                   <h4 className="font-bold text-[#1d1d1f] dark:text-white">Our Quality Guarantee</h4>
                 </div>
                 <p className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-400 mb-5">
-                  Every device purchased from Available Tech is backed by our customer satisfaction commitment and rigorous warranty verification on genuine hardware.
+                  Every device purchased from Hedge Computers is backed by our customer satisfaction commitment and rigorous warranty verification on genuine hardware.
                 </p>
                 <Link
                   href="/products"

@@ -14,7 +14,7 @@ import { getAllPhones } from "@/services/phoneService";
 import { isSupabaseConfigured } from "@/lib/supabase";
 
 export const metadata = {
-  title: "Admin Dashboard | Available Tech",
+  title: "Admin Dashboard | Hedge Computers",
 };
 
 export const dynamic = "force-dynamic";

@@ -1,36 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
   <defs>
-    <!-- Apple Titanium / Silver Metallic Sheen -->
-    <linearGradient id="appleTitanium" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#2a2a2e" />
-      <stop offset="40%" stop-color="#1c1c1f" />
-      <stop offset="100%" stop-color="#0a0a0c" />
+    <linearGradient id="hedgeBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181b" />
+      <stop offset="100%" stop-color="#09090b" />
     </linearGradient>
-    <linearGradient id="silverSheen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" />
-      <stop offset="50%" stop-color="#d4d4d8" />
-      <stop offset="100%" stop-color="#a1a1aa" />
+    <linearGradient id="crimsonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#b91c1c" />
     </linearGradient>
     <linearGradient id="rimGlow" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4" />
-      <stop offset="100%" stop-color="#71717a" stop-opacity="0.1" />
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#dc2626" stop-opacity="0.2" />
     </linearGradient>
   </defs>
 
-  <!-- Apple Squircle Base -->
-  <rect width="32" height="32" rx="8" fill="url(#appleTitanium)" />
-  
-  <!-- Precision Machined Rim -->
+  <!-- Squircle Base -->
+  <rect width="32" height="32" rx="8" fill="url(#hedgeBg)" />
   <rect x="0.5" y="0.5" width="31" height="31" rx="7.5" stroke="url(#rimGlow)" stroke-width="1" />
 
-  <!-- Available Tech "A" Monogram / Minimalist Apex -->
+  <!-- Hedge Computers 4-Diamond Emblem -->
   <g transform="translate(16, 16)">
-    <!-- Sleek Precision Geometric "A" -->
-    <path
-      d="M0 -7.5L5.8 6.5H2.6L1.3 3.2H-1.3L-2.6 6.5H-5.8L0 -7.5ZM0 -2.4L-0.9 0.9H0.9L0 -2.4Z"
-      fill="url(#silverSheen)"
-    />
-    <!-- Subtle Apple-like Dot Indicator -->
-    <circle cx="6.5" cy="-5" r="1.2" fill="#ffffff" opacity="0.9" />
+    <!-- Top Diamond -->
+    <polygon points="0,-9 4,-5 0,-1 -4,-5" fill="url(#crimsonGrad)" />
+    <!-- Bottom Diamond -->
+    <polygon points="0,1 4,5 0,9 -4,5" fill="url(#crimsonGrad)" />
+    <!-- Left Diamond -->
+    <polygon points="-5,-4 -1,0 -5,4 -9,0" fill="url(#crimsonGrad)" />
+    <!-- Right Diamond -->
+    <polygon points="5,-4 9,0 5,4 1,0" fill="url(#crimsonGrad)" />
   </g>
 </svg>

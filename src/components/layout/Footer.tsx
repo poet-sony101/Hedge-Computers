@@ -13,21 +13,22 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="space-y-4 md:col-span-1">
             <Link href="/" className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-950 dark:from-zinc-100 dark:to-zinc-300 text-white dark:text-zinc-900 shadow-sm border border-black/10 dark:border-white/20">
-                <svg
-                  className="h-3.5 w-3.5 fill-current"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M12 2L2 22h4.5l2.25-5h6.5l2.25 5H22L12 2zm0 6.5l2.2 4.5h-4.4L12 8.5z" />
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white dark:bg-[#1c1c1e] text-[#DC2626] shadow-sm border border-black/10 dark:border-white/20 p-1.5">
+                <svg viewBox="0 0 100 100" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="50,14 65,29 50,44 35,29" fill="#DC2626" />
+                  <polygon points="50,56 65,71 50,86 35,71" fill="#111827" />
+                  <polygon points="29,35 44,50 29,65 14,50" fill="#111827" />
+                  <polygon points="71,35 86,50 71,65 56,50" fill="#111827" />
+                  <line x1="24" y1="24" x2="76" y2="76" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
+                  <line x1="76" y1="24" x2="24" y2="76" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
                 </svg>
               </span>
               <span className="text-lg font-bold tracking-tight text-[#1d1d1f] dark:text-white">
-                Available<span className="font-light text-zinc-500 dark:text-zinc-400 ml-0.5">Tech</span>
+                Hedge<span className="text-[#DC2626] ml-0.5">Computers</span>
               </span>
             </Link>
             <p className="text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-              Your trusted destination for genuine brand-new and premium UK-used technology. Transparent, daily market-aligned pricing without the hassle.
+              USA Used &amp; Brand New Computers/Laptops in Lagos Nigeria. Supplying in bulk wholesale and retail units to companies, institutions, and professionals with verified testing.
             </p>
             <div className="pt-1">
               <a
@@ -54,23 +55,23 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
-                  All Products
-                </Link>
-              </li>
-              <li>
-                <Link href="/phones" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
-                  Smartphones
-                </Link>
-              </li>
-              <li>
                 <Link href="/laptops" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
                   Laptops &amp; MacBooks
                 </Link>
               </li>
               <li>
+                <Link href="/phones" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
+                  Smartphones &amp; Gadgets
+                </Link>
+              </li>
+              <li>
+                <Link href="/products" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
+                  All Inventory
+                </Link>
+              </li>
+              <li>
                 <Link href="/request" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
-                  Request a Device
+                  Custom Device Request
                 </Link>
               </li>
               <li>
@@ -88,28 +89,28 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link href="/phones?brand=Apple" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
-                  Apple iPhone &amp; Mac
-                </Link>
-              </li>
-              <li>
-                <Link href="/phones?brand=Samsung" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
-                  Samsung Galaxy
+                <Link href="/laptops?brand=HP" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
+                  HP EliteBook &amp; Envy
                 </Link>
               </li>
               <li>
                 <Link href="/laptops?brand=Dell" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
-                  Dell XPS &amp; Laptops
+                  Dell XPS &amp; Latitude
                 </Link>
               </li>
               <li>
-                <Link href="/laptops?brand=HP" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
-                  HP Spectre &amp; Envy
+                <Link href="/laptops?brand=Apple" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
+                  Apple MacBook Pro &amp; Air
                 </Link>
               </li>
               <li>
-                <Link href="/phones?brand=Google" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
-                  Google Pixel
+                <Link href="/laptops?brand=Lenovo" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
+                  Lenovo ThinkPad X1
+                </Link>
+              </li>
+              <li>
+                <Link href="/laptops?brand=ASUS" className="hover:text-[#1d1d1f] dark:hover:text-white transition-colors">
+                  ASUS ROG &amp; ZenBook
                 </Link>
               </li>
             </ul>
@@ -122,15 +123,15 @@ export default function Footer() {
             </h4>
             <div className="space-y-2.5 text-xs">
               <p className="flex items-start gap-2 text-zinc-600 dark:text-zinc-400">
-                <MapPin className="h-4 w-4 shrink-0 text-zinc-800 dark:text-zinc-200 mt-0.5" />
+                <MapPin className="h-4 w-4 shrink-0 text-[#DC2626] mt-0.5" />
                 <span>{SITE_CONFIG.address}</span>
               </p>
               <p className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
-                <PhoneCall className="h-4 w-4 shrink-0 text-zinc-800 dark:text-zinc-200" />
+                <PhoneCall className="h-4 w-4 shrink-0 text-[#DC2626]" />
                 <span>{SITE_CONFIG.displayPhone}</span>
               </p>
               <p className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
-                <Mail className="h-4 w-4 shrink-0 text-zinc-800 dark:text-zinc-200" />
+                <Mail className="h-4 w-4 shrink-0 text-[#DC2626]" />
                 <span>{SITE_CONFIG.email}</span>
               </p>
               <div className="pt-2 text-[11px] text-zinc-500">
@@ -146,7 +147,7 @@ export default function Footer() {
         <div className="mt-8 flex flex-col items-center justify-between gap-4 text-xs text-zinc-500 sm:flex-row">
           <p>© {new Date().getFullYear()} {SITE_CONFIG.name}. All rights reserved.</p>
           <p className="flex items-center gap-2">
-            <span>Direct device sourcing • Computer Village, Ikeja</span>
+            <span>Direct USA Imports • Computer Village, Ikeja</span>
           </p>
         </div>
       </div>

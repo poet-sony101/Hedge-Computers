@@ -10,7 +10,7 @@ type EditPhonePageProps = {
 };
 
 export const metadata = {
-  title: "Edit Device | Admin | Available Tech",
+  title: "Edit Device | Admin | Hedge Computers",
 };
 
 export const dynamic = "force-dynamic";

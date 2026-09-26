@@ -5,7 +5,7 @@ import LaptopCatalogClient from "./LaptopCatalogClient";
 import { getAllPhones } from "@/services/phoneService";
 
 export const metadata = {
-  title: "Browse Laptops & MacBooks | Available Tech",
+  title: "Browse Laptops & MacBooks | Hedge Computers",
   description:
     "Explore verified Apple MacBooks, Dell XPS, HP Spectre, and Lenovo ThinkPads. Inquire for today's market price directly on WhatsApp.",
 };

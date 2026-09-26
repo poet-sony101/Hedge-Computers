@@ -16,13 +16,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Available Tech | Premium Device Catalog & Daily Inquiries",
+  title: "Hedge Computers | USA Used & Brand New Laptops • Computer Village, Ikeja",
   description:
-    "Explore verified smartphones, MacBooks, laptops, smartwatches, and accessories in Computer Village, Ikeja, Lagos. Request today's best market price directly on WhatsApp.",
+    "Explore verified USA-used and brand-new laptops, MacBooks, computers, and gadgets in Computer Village, Ikeja, Lagos. 12 Oshitelu Street. Request today's best price directly on WhatsApp.",
   icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg",
-    apple: "/icon.svg",
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
   },
 };
 
@@ -43,7 +43,7 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  var stored = localStorage.getItem('available_tech_theme');
+                  var stored = localStorage.getItem('hedge_computers_theme');
                   if (stored === 'light') {
                     document.documentElement.classList.remove('dark');
                   } else if (stored === 'dark') {
@@ -62,7 +62,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-sans antialiased bg-[#f5f5f7] dark:bg-black text-[#1d1d1f] dark:text-[#f5f5f7] selection:bg-zinc-800 selection:text-white dark:selection:bg-zinc-200 dark:selection:text-black">
+      <body className="font-sans antialiased bg-[#f5f5f7] dark:bg-black text-[#1d1d1f] dark:text-[#f5f5f7] selection:bg-[#DC2626] selection:text-white">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

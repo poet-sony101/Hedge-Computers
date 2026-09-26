@@ -3,7 +3,7 @@ import { isAdminAuthenticated } from "@/lib/adminAuth";
 import NewPhoneClient from "./NewPhoneClient";
 
 export const metadata = {
-  title: "Add Device | Admin | Available Tech",
+  title: "Add Device | Admin | Hedge Computers",
 };
 
 export const dynamic = "force-dynamic";

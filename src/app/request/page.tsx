@@ -3,9 +3,9 @@ import Footer from "@/components/layout/Footer";
 import RequestPhoneClient from "./RequestPhoneClient";
 
 export const metadata = {
-  title: "Request a Device | Available Tech",
+  title: "Request a Device | Hedge Computers",
   description:
-    "Can't find the smartphone, MacBook, or workstation you're looking for? Submit a custom request and let Available Tech source it for you at today's best price.",
+    "Can't find the laptop, MacBook, or workstation you're looking for? Submit a custom request and let Hedge Computers source it for you at today's best price.",
 };
 
 export default function RequestPage() {

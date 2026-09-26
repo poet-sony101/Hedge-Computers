@@ -7,8 +7,8 @@ import { Search, Filter, X, Laptop, ArrowRight } from "lucide-react";
 import { Phone } from "@/types/phone";
 import PhoneCard from "@/components/phone/PhoneCard";
 
-const LAPTOP_BRANDS = ["All", "Apple", "Dell", "HP", "Lenovo"];
-const CONDITIONS = ["All", "Brand New", "UK Used"];
+const LAPTOP_BRANDS = ["All", "HP", "Dell", "Apple", "Lenovo", "ASUS"];
+const CONDITIONS = ["All", "USA Used", "Brand New", "UK Used"];
 
 interface LaptopCatalogClientProps {
   initialLaptops: Phone[];
@@ -57,7 +57,8 @@ export default function LaptopCatalogClient({
         laptop.brand.toLowerCase() === selectedBrand.toLowerCase();
 
       const matchesCondition =
-        selectedCondition === "All" || laptop.condition === selectedCondition;
+        selectedCondition === "All" ||
+        laptop.condition.toLowerCase().includes(selectedCondition.toLowerCase());
 
       const matchesSearch =
         searchQuery.trim() === "" ||
@@ -81,19 +82,19 @@ export default function LaptopCatalogClient({
     <div className="container-custom">
       {/* Header & Title */}
       <div className="max-w-3xl mb-10">
-        <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+        <span className="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-500">
           Workstation &amp; Ultrabook Inventory
         </span>
-        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-[#1d1d1f] dark:text-white mt-1">
-          Laptops &amp; MacBooks
+        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-zinc-950 dark:text-white mt-1">
+          Laptops, MacBooks &amp; Workstations
         </h1>
-        <p className="mt-3 text-base text-zinc-600 dark:text-zinc-400">
-          Discover verified Apple MacBooks, Dell XPS, HP Spectre, and Lenovo ThinkPads. Every unit is tested for battery health, thermal performance, and keyboard reliability.
+        <p className="mt-3 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+          Discover verified HP EliteBooks, Dell XPS, Apple MacBooks, and Lenovo ThinkPads direct from 12 Oshitelu Street, Computer Village. Every unit is tested for clean motherboard diagnostics, original battery health, and keyboard reliability.
         </p>
       </div>
 
       {/* Search & Filter Controls */}
-      <div className="space-y-5 rounded-3xl border border-black/[0.08] dark:border-white/10 bg-white dark:bg-[#1c1c1e] p-6 shadow-sm backdrop-blur-xl mb-10">
+      <div className="space-y-5 rounded-3xl border border-red-500/20 bg-white dark:bg-[#121216] p-6 shadow-sm backdrop-blur-xl mb-10">
         {/* Search Bar */}
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
@@ -102,7 +103,7 @@ export default function LaptopCatalogClient({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search laptops by model, processor, or RAM (e.g., M3 Pro, XPS 15, Core i7, 32GB)..."
-            className="w-full rounded-full border border-black/[0.08] dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 py-3 pl-11 pr-10 text-xs text-[#1d1d1f] dark:text-white placeholder-zinc-400 outline-none transition focus:border-zinc-400 dark:focus:border-zinc-500"
+            className="w-full rounded-full border border-black/10 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 py-3 pl-11 pr-10 text-xs text-zinc-900 dark:text-white placeholder-zinc-400 outline-none transition focus:border-red-600 dark:focus:border-red-500"
           />
           {searchQuery && (
             <button
@@ -119,8 +120,8 @@ export default function LaptopCatalogClient({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2">
           {/* Brand Tabs */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mr-1 flex items-center gap-1">
-              <Filter className="h-3.5 w-3.5" />
+            <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mr-1 flex items-center gap-1">
+              <Filter className="h-3.5 w-3.5 text-red-600" />
               Brand:
             </span>
             {LAPTOP_BRANDS.map((brand) => {
@@ -129,10 +130,10 @@ export default function LaptopCatalogClient({
                 <button
                   key={brand}
                   onClick={() => handleBrandChange(brand)}
-                  className={`rounded-full px-3.5 py-1 text-xs font-medium transition-all ${
+                  className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
                     active
-                      ? "bg-[#1d1d1f] text-white dark:bg-white dark:text-black shadow-sm font-semibold"
-                      : "border border-black/[0.06] dark:border-white/10 bg-zinc-100/80 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-[#1d1d1f] dark:hover:text-white"
+                      ? "bg-red-600 text-white shadow-md shadow-red-600/20"
+                      : "border border-black/10 dark:border-white/10 bg-zinc-100/80 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-zinc-950 dark:hover:text-white"
                   }`}
                 >
                   {brand}
@@ -141,37 +142,38 @@ export default function LaptopCatalogClient({
             })}
           </div>
 
-          {/* Condition Pills */}
+          {/* Condition Tabs */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mr-1">Condition:</span>
-            {CONDITIONS.map((cond) => {
-              const active = selectedCondition === cond;
+            <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mr-1">
+              Condition:
+            </span>
+            {CONDITIONS.map((condition) => {
+              const active = selectedCondition === condition;
               return (
                 <button
-                  key={cond}
-                  onClick={() => handleConditionChange(cond)}
-                  className={`rounded-full px-3.5 py-1 text-xs font-medium transition-all ${
+                  key={condition}
+                  onClick={() => handleConditionChange(condition)}
+                  className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
                     active
-                      ? "bg-[#1d1d1f] text-white dark:bg-white dark:text-black shadow-sm font-semibold"
-                      : "border border-black/[0.06] dark:border-white/10 bg-zinc-100/80 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-[#1d1d1f] dark:hover:text-white"
+                      ? "bg-red-600 text-white shadow-md shadow-red-600/20"
+                      : "border border-black/10 dark:border-white/10 bg-zinc-100/80 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-zinc-950 dark:hover:text-white"
                   }`}
                 >
-                  {cond}
+                  {condition}
                 </button>
               );
             })}
-
-            {hasActiveFilters && (
-              <button
-                onClick={clearFilters}
-                className="ml-auto text-xs text-rose-500 hover:text-rose-600 dark:text-rose-400 underline underline-offset-2 flex items-center gap-1 font-medium"
-              >
-                Reset
-              </button>
-            )}
-          </div>
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="text-xs text-red-600 hover:text-red-700 font-bold underline underline-offset-2 flex items-center gap-1"
+            >
+              Reset Filters
+            </button>
+          )}
         </div>
       </div>
+    </div>
 
       {/* Results Header Count */}
       <div className="flex items-center justify-between mb-6 px-1">

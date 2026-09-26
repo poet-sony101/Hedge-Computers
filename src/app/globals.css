@@ -19,8 +19,8 @@ body {
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-  --font-heading: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  --font-heading: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -63,74 +63,64 @@ body {
 }
 
 :root {
-  /* Apple Light Theme: Signature #f5f5f7 off-white, #1d1d1f text, pure white cards */
-  --background: #f5f5f7;
-  --foreground: #1d1d1f;
+  /* Hedge Computers Studio Light: Clean Architectural Silver/White with Crimson Accents */
+  --background: #f8f9fa;
+  --foreground: #09090b;
   --card: #ffffff;
-  --card-foreground: #1d1d1f;
+  --card-foreground: #09090b;
   --popover: #ffffff;
-  --popover-foreground: #1d1d1f;
-  --primary: #1d1d1f;
+  --popover-foreground: #09090b;
+  --primary: #dc2626;
   --primary-foreground: #ffffff;
-  --secondary: #e8e8ed;
-  --secondary-foreground: #1d1d1f;
-  --muted: #e8e8ed;
-  --muted-foreground: #86868b;
-  --accent: #f2f2f5;
-  --accent-foreground: #1d1d1f;
+  --secondary: #f1f2f4;
+  --secondary-foreground: #09090b;
+  --muted: #f1f2f4;
+  --muted-foreground: #64748b;
+  --accent: #fee2e2;
+  --accent-foreground: #991b1b;
   --destructive: #ef4444;
   --border: rgba(0, 0, 0, 0.08);
   --input: rgba(0, 0, 0, 0.08);
-  --ring: #86868b;
-  --chart-1: #1d1d1f;
-  --chart-2: #86868b;
-  --chart-3: #a1a1aa;
-  --chart-4: #d4d4d8;
-  --chart-5: #e4e4e7;
+  --ring: #dc2626;
   --radius: 0.875rem;
-  --sidebar: #f5f5f7;
-  --sidebar-foreground: #1d1d1f;
-  --sidebar-primary: #1d1d1f;
+  --sidebar: #f8f9fa;
+  --sidebar-foreground: #09090b;
+  --sidebar-primary: #dc2626;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e8e8ed;
-  --sidebar-accent-foreground: #1d1d1f;
+  --sidebar-accent: #f1f2f4;
+  --sidebar-accent-foreground: #09090b;
   --sidebar-border: rgba(0, 0, 0, 0.08);
-  --sidebar-ring: #86868b;
+  --sidebar-ring: #dc2626;
 }
 
 .dark {
-  /* Apple Dark Theme: Pure OLED black, #1c1c1e cards, #f5f5f7 text */
-  --background: #000000;
-  --foreground: #f5f5f7;
-  --card: #1c1c1e;
-  --card-foreground: #f5f5f7;
-  --popover: #1c1c1e;
-  --popover-foreground: #f5f5f7;
-  --primary: #f5f5f7;
-  --primary-foreground: #000000;
-  --secondary: #2c2c2e;
-  --secondary-foreground: #f5f5f7;
-  --muted: #2c2c2e;
-  --muted-foreground: #a1a1a6;
-  --accent: #2c2c2e;
-  --accent-foreground: #f5f5f7;
+  /* Hedge Computers Carbon Onyx Dark: High-Performance Computing Aesthetic with Deep Carbon & Crimson */
+  --background: #09090b;
+  --foreground: #f4f4f5;
+  --card: #121216;
+  --card-foreground: #f4f4f5;
+  --popover: #121216;
+  --popover-foreground: #f4f4f5;
+  --primary: #dc2626;
+  --primary-foreground: #ffffff;
+  --secondary: #1e1e24;
+  --secondary-foreground: #f4f4f5;
+  --muted: #1e1e24;
+  --muted-foreground: #94a3b8;
+  --accent: #2d1518;
+  --accent-foreground: #f87171;
   --destructive: #f87171;
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.12);
-  --ring: #71717a;
-  --chart-1: #f5f5f7;
-  --chart-2: #a1a1aa;
-  --chart-3: #71717a;
-  --chart-4: #52525b;
-  --chart-5: #3f3f46;
-  --sidebar: #121214;
-  --sidebar-foreground: #f5f5f7;
-  --sidebar-primary: #f5f5f7;
-  --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #1c1c1e;
-  --sidebar-accent-foreground: #f5f5f7;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #dc2626;
+  --sidebar: #0e0e12;
+  --sidebar-foreground: #f4f4f5;
+  --sidebar-primary: #dc2626;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #18181f;
+  --sidebar-accent-foreground: #f4f4f5;
   --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #71717a;
+  --sidebar-ring: #dc2626;
 }
 
 @layer base {
@@ -145,27 +135,65 @@ body {
   }
 }
 
-/* Apple Aesthetic Utility Classes */
-.apple-card {
-  @apply rounded-3xl border border-black/[0.06] dark:border-white/10 bg-white/90 dark:bg-[#1c1c1e]/80 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-all;
+/* Hedge Computers Signature Design System */
+.hedge-card {
+  @apply rounded-3xl border border-black/[0.08] dark:border-white/10 bg-white/95 dark:bg-[#121216]/95 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300;
 }
 
-.apple-silver-gradient {
-  background: linear-gradient(135deg, #1d1d1f 0%, #4b5563 50%, #1d1d1f 100%);
+.hedge-card-hover {
+  @apply hover:border-red-500/40 hover:shadow-[0_8px_30px_rgba(220,38,38,0.12)] hover:-translate-y-1 transition-all duration-300;
+}
+
+.hedge-gradient-text {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.dark .apple-silver-gradient {
+.hedge-silver-gradient {
   background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.apple-button-primary {
-  @apply inline-flex items-center justify-center rounded-full bg-[#1d1d1f] hover:bg-black text-white dark:bg-white dark:text-black dark:hover:bg-zinc-200 px-6 py-2.5 text-xs font-semibold shadow-sm transition-all duration-200 active:scale-95;
+.hedge-btn-crimson {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-red-600 via-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-semibold shadow-lg shadow-red-600/25 transition-all duration-200 active:scale-95 px-6 py-2.5 text-xs;
+}
+
+.hedge-btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full border border-black/10 dark:border-white/15 bg-white/80 dark:bg-zinc-900/80 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-semibold shadow-sm transition-all duration-200 active:scale-95 px-6 py-2.5 text-xs;
+}
+
+.tech-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(220, 38, 38, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(220, 38, 38, 0.04) 1px, transparent 1px);
+}
+
+.dark .tech-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+/* Backward compatibility aliases */
+.apple-card {
+  @apply rounded-3xl border border-black/[0.08] dark:border-white/10 bg-white/95 dark:bg-[#121216]/95 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all;
+}
+
+.apple-button-primary,
+.apple-button-crimson {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-red-600 via-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-semibold shadow-lg shadow-red-600/25 transition-all duration-200 active:scale-95 px-6 py-2.5 text-xs;
 }
 
 .apple-button-secondary {
-  @apply inline-flex items-center justify-center rounded-full border border-black/10 dark:border-white/15 bg-white/70 dark:bg-zinc-900/80 hover:bg-white dark:hover:bg-zinc-800 text-[#1d1d1f] dark:text-[#f5f5f7] px-6 py-2.5 text-xs font-semibold shadow-sm backdrop-blur-md transition-all duration-200 active:scale-95;
+  @apply inline-flex items-center justify-center gap-2 rounded-full border border-black/10 dark:border-white/15 bg-white/80 dark:bg-zinc-900/80 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-semibold shadow-sm transition-all duration-200 active:scale-95 px-6 py-2.5 text-xs;
+}
+
+.crimson-gradient {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

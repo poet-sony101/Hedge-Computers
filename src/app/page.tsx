@@ -1,6 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/home/Hero";
-import Brands from "@/components/home/Brands";
+import LaptopFinder from "@/components/home/LaptopFinder";
 import FeaturedPhones from "@/components/home/FeaturedPhones";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
 import CTA from "@/components/home/CTA";
@@ -19,7 +19,7 @@ export default async function Home() {
       <Navbar />
       <main className="min-h-screen">
         <Hero spotlightProduct={spotlight} />
-        <Brands />
+        <LaptopFinder />
         <FeaturedPhones />
         <WhyChooseUs />
         <CTA />

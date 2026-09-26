@@ -281,7 +281,7 @@ export default function NewPhoneClient() {
             Add New {categoryLabel}
           </h1>
           <p className="text-xs text-[#86868b] mt-1">
-            Publish a new {categoryLabel.toLowerCase()} listing to the Available Tech catalog.
+            Publish a new {categoryLabel.toLowerCase()} listing to the Hedge Computers catalog.
           </p>
         </div>
       </div>

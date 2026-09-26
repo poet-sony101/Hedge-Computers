@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="48" viewBox="0 0 240 48" fill="none">
+  <defs>
+    <linearGradient id="logoCrimson" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#b91c1c" />
+    </linearGradient>
+  </defs>
+
+  <!-- 4-Diamond Emblem -->
+  <g transform="translate(24, 24)">
+    <!-- Top Diamond -->
+    <polygon points="0,-14 6.5,-7.5 0,-1 -6.5,-7.5" fill="url(#logoCrimson)" />
+    <!-- Bottom Diamond -->
+    <polygon points="0,1 6.5,7.5 0,14 -6.5,7.5" fill="url(#logoCrimson)" />
+    <!-- Left Diamond -->
+    <polygon points="-7.5,-6.5 -1,0 -7.5,6.5 -14,0" fill="url(#logoCrimson)" />
+    <!-- Right Diamond -->
+    <polygon points="7.5,-6.5 14,0 7.5,6.5 1,0" fill="url(#logoCrimson)" />
+  </g>
+
+  <!-- Typography -->
+  <text x="52" y="24" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="16" letter-spacing="0.1em">HEDGE</text>
+  <text x="52" y="38" fill="#ef4444" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="11" letter-spacing="0.25em">COMPUTERS</text>
+</svg>

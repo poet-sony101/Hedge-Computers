@@ -1,8 +1,7 @@
 import { Phone } from "@/types/phone";
 
-const CLOUD_BIN_ID = "fdddffb";
-const CLOUD_BIN_URL = `https://extendsclass.com/api/json-storage/bin/${CLOUD_BIN_ID}`;
-const CLOUD_BIN_KEY = "AvailableTechAdmin2026!";
+const CLOUD_BIN_URL = process.env.CLOUD_BIN_URL || "";
+const CLOUD_BIN_KEY = process.env.CLOUD_BIN_KEY || "";
 
 // Fast in-memory cache for high-throughput visitor page loads
 let memoryCache: Phone[] | null = null;
@@ -10,7 +9,7 @@ let lastFetchTime = 0;
 const CACHE_TTL_MS = 3000; // 3 seconds TTL
 
 export function isCloudStoreConfigured(): boolean {
-  return true;
+  return Boolean(CLOUD_BIN_URL && CLOUD_BIN_URL.startsWith("http"));
 }
 
 export function invalidateCloudCache(): void {
@@ -22,6 +21,10 @@ export function invalidateCloudCache(): void {
  * Fetch catalog directly from global persistent Cloud Storage
  */
 export async function fetchFromCloudStore(): Promise<Phone[] | null> {
+  if (!isCloudStoreConfigured()) {
+    return null;
+  }
+
   const now = Date.now();
   if (memoryCache && now - lastFetchTime < CACHE_TTL_MS) {
     return memoryCache;
@@ -36,7 +39,6 @@ export async function fetchFromCloudStore(): Promise<Phone[] | null> {
       headers: {
         "Cache-Control": "no-cache",
         "Accept": "application/json",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AvailableTech/1.0",
       },
       next: { revalidate: 0 },
     });
@@ -44,7 +46,7 @@ export async function fetchFromCloudStore(): Promise<Phone[] | null> {
 
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
+      if (Array.isArray(data)) {
         memoryCache = data;
         lastFetchTime = now;
         return data;
@@ -61,6 +63,10 @@ export async function fetchFromCloudStore(): Promise<Phone[] | null> {
  * Persist updated catalog directly to global Cloud Storage
  */
 export async function saveToCloudStore(phones: Phone[]): Promise<boolean> {
+  if (!isCloudStoreConfigured()) {
+    return false;
+  }
+
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
@@ -72,7 +78,6 @@ export async function saveToCloudStore(phones: Phone[]): Promise<boolean> {
         "Content-Type": "application/json",
         "Security-key": CLOUD_BIN_KEY,
         "Accept": "application/json",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AvailableTech/1.0",
       },
       body: JSON.stringify(phones),
     });

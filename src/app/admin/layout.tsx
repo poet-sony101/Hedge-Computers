@@ -48,42 +48,37 @@ export default function AdminLayout({
           {/* Brand */}
           <div className="flex items-center gap-6">
             <Link href="/admin" className="flex items-center gap-2.5">
-              {/* Apple Titanium Monogram Squircle */}
-              <div className="relative flex h-8 w-8 items-center justify-center rounded-[9px] bg-gradient-to-b from-[#2c2c2e] via-[#1c1c1e] to-[#000000] p-0.5 shadow-sm border border-black/10 dark:border-white/20">
+              {/* Hedge Computers 4-Diamond Emblem Squircle */}
+              <div className="relative flex h-8 w-8 items-center justify-center rounded-[9px] bg-gradient-to-b from-[#27272a] via-[#18181b] to-[#09090b] p-0.5 shadow-sm border border-red-500/20">
                 <svg
-                  viewBox="0 0 40 40"
+                  viewBox="0 0 24 24"
                   className="h-4 w-4"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path
-                    d="M20 7L31 31H25.5L23.2 26H16.8L14.5 31H9L20 7Z"
-                    fill="url(#adminLogoA)"
-                  />
-                  <path
-                    d="M18.2 22H21.8L20 17.5L18.2 22Z"
-                    fill="#000000"
-                  />
+                  <polygon points="12,3 15.5,7.5 12,12 8.5,7.5" fill="url(#adminDiamondRed)" />
+                  <polygon points="12,12 15.5,16.5 12,21 8.5,16.5" fill="url(#adminDiamondRed)" />
+                  <polygon points="6,7.5 10.5,12 6,16.5 1.5,12" fill="url(#adminDiamondRed)" />
+                  <polygon points="18,7.5 22.5,12 18,16.5 13.5,12" fill="url(#adminDiamondRed)" />
                   <defs>
                     <linearGradient
-                      id="adminLogoA"
-                      x1="20"
-                      y1="7"
-                      x2="20"
-                      y2="31"
+                      id="adminDiamondRed"
+                      x1="0"
+                      y1="0"
+                      x2="24"
+                      y2="24"
                       gradientUnits="userSpaceOnUse"
                     >
-                      <stop stopColor="#ffffff" />
-                      <stop offset="0.6" stopColor="#e5e5ea" />
-                      <stop offset="1" stopColor="#8e8e93" />
+                      <stop stopColor="#ef4444" />
+                      <stop offset="1" stopColor="#b91c1c" />
                     </linearGradient>
                   </defs>
                 </svg>
               </div>
               <span className="text-base font-bold tracking-tight text-[#1d1d1f] dark:text-white">
-                Available Tech
+                Hedge <span className="text-red-600 dark:text-red-500">Computers</span>
               </span>
-              <span className="rounded-full bg-black/5 dark:bg-white/10 px-2.5 py-0.5 text-[10px] font-semibold text-[#86868b] dark:text-[#a1a1a6] border border-black/5 dark:border-white/10">
+              <span className="rounded-full bg-red-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-red-600 dark:text-red-400 border border-red-500/20">
                 Admin
               </span>
             </Link>

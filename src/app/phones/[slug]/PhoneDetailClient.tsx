@@ -190,7 +190,7 @@ export default function PhoneDetailClient({
                 </span>
               </div>
               <p className="mt-2 text-xs text-[#86868b] dark:text-zinc-400 leading-relaxed">
-                Devices trade at dynamic wholesale rates. Available Tech quotes today&apos;s sharpest real-time price on WhatsApp with zero bloated markups.
+                Devices trade at dynamic wholesale rates. Hedge Computers quotes today&apos;s sharpest real-time price on WhatsApp with zero bloated markups.
               </p>
             </div>
 

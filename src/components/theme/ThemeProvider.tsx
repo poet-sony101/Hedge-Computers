@@ -20,7 +20,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 function getSnapshot(): Theme {
   if (typeof window === "undefined") return "dark";
-  const stored = localStorage.getItem("available_tech_theme") as Theme | null;
+  const stored = localStorage.getItem("hedge_computers_theme") as Theme | null;
   if (stored === "light" || stored === "dark") return stored;
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
@@ -54,7 +54,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = useCallback(
     (newTheme: Theme) => {
-      localStorage.setItem("available_tech_theme", newTheme);
+      localStorage.setItem("hedge_computers_theme", newTheme);
       applyTheme(newTheme);
       window.dispatchEvent(new Event("storage"));
     },

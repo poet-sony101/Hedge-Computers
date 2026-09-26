@@ -5,7 +5,7 @@ import ProductCatalogClient from "./ProductCatalogClient";
 import { getAllPhones } from "@/services/phoneService";
 
 export const metadata = {
-  title: "Products Catalog | Available Tech",
+  title: "Products Catalog | Hedge Computers",
   description:
     "Explore our complete catalog of smartphones, MacBooks, laptops, gadgets, and accessories. Inquire for today's market price directly on WhatsApp.",
 };
