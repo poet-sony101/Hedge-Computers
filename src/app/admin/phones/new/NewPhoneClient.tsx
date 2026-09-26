@@ -65,12 +65,12 @@ export default function NewPhoneClient() {
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
-    category: "phone" as DeviceCategory,
+    category: "laptop" as DeviceCategory,
     brand: "Apple",
-    condition: "UK Used" as PhoneCondition,
-    storage: "256GB",
-    storageOptions: "128GB, 256GB, 512GB",
-    colors: "Black, Silver, Blue",
+    condition: "USA Used" as PhoneCondition,
+    storage: "512GB SSD",
+    storageOptions: "256GB SSD, 512GB SSD, 1TB SSD",
+    colors: "Space Gray, Silver, Midnight",
     image: "",
     priceNote: "Price on daily request (market rate)",
     inStock: true,
@@ -287,9 +287,16 @@ export default function NewPhoneClient() {
       </div>
 
       {error && (
-        <div className="flex items-center gap-3 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs text-rose-600 dark:text-rose-400">
-          <AlertCircle className="h-4 w-4 shrink-0" />
-          <span>{error}</span>
+        <div className="flex items-start gap-3 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs text-rose-600 dark:text-rose-400">
+          <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+          <div className="space-y-1.5 flex-1">
+            <p className="font-semibold">{error}</p>
+            {(error.includes("public.devices") || error.includes("schema cache") || error.includes("Supabase")) && (
+              <p className="text-[11px] text-[#86868b] dark:text-[#a1a1a6]">
+                <strong>Fix:</strong> Open your Supabase Dashboard &rarr; <strong>SQL Editor</strong> &rarr; Run the query in <code className="px-1.5 py-0.5 rounded bg-black/10 dark:bg-white/10 font-mono text-[11px]">supabase/schema.sql</code> to create the database table and image storage bucket.
+              </p>
+            )}
+          </div>
         </div>
       )}
 

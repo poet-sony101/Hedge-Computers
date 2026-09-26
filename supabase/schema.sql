@@ -1,4 +1,4 @@
--- Available Tech: Supabase Database Schema
+-- Hedge Computers: Supabase Database Schema
 -- Run this in your Supabase SQL Editor (https://app.supabase.com -> Project -> SQL Editor)
 
 -- 1. Create the 'devices' table
@@ -7,10 +7,10 @@ create table if not exists public.devices (
   slug text unique not null,
   name text not null,
   brand text not null,
-  category text not null default 'phone',
+  category text not null default 'laptop',
   storage text not null,
   storage_options jsonb default '[]'::jsonb,
-  condition text not null default 'UK Used',
+  condition text not null default 'USA Used',
   colors jsonb default '[]'::jsonb,
   image text not null,
   images jsonb default '[]'::jsonb,

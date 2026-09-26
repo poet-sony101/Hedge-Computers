@@ -261,6 +261,16 @@ export async function createPhone(
         return rowToPhone(created);
       }
       console.error("[Supabase] createPhone error:", error);
+      if (
+        error?.message?.includes("schema cache") ||
+        error?.message?.includes("does not exist") ||
+        error?.code === "PGRST205" ||
+        error?.code === "42P01"
+      ) {
+        throw new Error(
+          "Could not find table 'public.devices' in your Supabase database. Please open your Supabase Dashboard -> SQL Editor and run 'supabase/schema.sql' to create the table and permissions."
+        );
+      }
       throw new Error(error?.message || "Failed to create device in Supabase database");
     } catch (e) {
       console.error("[Supabase] createPhone exception:", e);
