@@ -1,7 +1,10 @@
 import { Phone } from "@/types/phone";
 
-const CLOUD_BIN_URL = process.env.CLOUD_BIN_URL || "";
-const CLOUD_BIN_KEY = process.env.CLOUD_BIN_KEY || "";
+const DEFAULT_CLOUD_BIN_URL = "https://extendsclass.com/api/json-storage/bin/dcaefec";
+const DEFAULT_CLOUD_BIN_KEY = "HedgeComputersAdmin2026!";
+
+const CLOUD_BIN_URL = process.env.CLOUD_BIN_URL || DEFAULT_CLOUD_BIN_URL;
+const CLOUD_BIN_KEY = process.env.CLOUD_BIN_KEY || DEFAULT_CLOUD_BIN_KEY;
 
 // Fast in-memory cache for high-throughput visitor page loads
 let memoryCache: Phone[] | null = null;

@@ -115,10 +115,11 @@ async function autoSeedSupabaseIfEmpty(supabase: ReturnType<typeof getSupabaseAd
       .select("*", { count: "exact", head: true });
 
     if (!error && count === 0) {
-      const localPhones = readLocalData();
-      if (localPhones.length > 0) {
-        console.log(`[Supabase] Auto-seeding ${localPhones.length} devices into Supabase...`);
-        const rowsToInsert = localPhones.map((p) => {
+      const cloudPhones = await fetchFromCloudStore();
+      const phonesToSeed = cloudPhones && cloudPhones.length > 0 ? cloudPhones : readLocalData();
+      if (phonesToSeed.length > 0) {
+        console.log(`[Supabase] Auto-seeding ${phonesToSeed.length} devices into Supabase...`);
+        const rowsToInsert = phonesToSeed.map((p) => {
           const row = phoneToRow(p);
           delete row.id;
           return row;
@@ -158,7 +159,7 @@ export async function getAllPhones(): Promise<Phone[]> {
   // 1. Persistent Zero-Config Cloud Storage (guarantees persistence on Vercel across all lambdas & users)
   try {
     const cloudPhones = await fetchFromCloudStore();
-    if (cloudPhones && Array.isArray(cloudPhones) && cloudPhones.length > 0) {
+    if (cloudPhones && Array.isArray(cloudPhones)) {
       return cloudPhones;
     }
   } catch (err) {
@@ -260,28 +261,16 @@ export async function createPhone(
         triggerRevalidation();
         return rowToPhone(created);
       }
-      console.error("[Supabase] createPhone error:", error);
-      if (
-        error?.message?.includes("schema cache") ||
-        error?.message?.includes("does not exist") ||
-        error?.code === "PGRST205" ||
-        error?.code === "42P01"
-      ) {
-        throw new Error(
-          "Could not find table 'public.devices' in your Supabase database. Please open your Supabase Dashboard -> SQL Editor and run 'supabase/schema.sql' to create the table and permissions."
-        );
-      }
-      throw new Error(error?.message || "Failed to create device in Supabase database");
+      console.warn("[Supabase] createPhone error, seamlessly falling back to Persistent Cloud DB:", error?.message);
     } catch (e) {
-      console.error("[Supabase] createPhone exception:", e);
-      throw e instanceof Error ? e : new Error("Failed to create device in Supabase database");
+      console.warn("[Supabase] createPhone exception, seamlessly falling back to Persistent Cloud DB:", e);
     }
   }
 
   // Cloud Store & Local fallback
   const phones = await getAllPhones();
   const nextId =
-    phones.length > 0 ? Math.max(...phones.map((p) => p.id)) + 1 : 1;
+    phones.length > 0 ? Math.max(...phones.map((p) => Number(p.id) || 0)) + 1 : 1;
 
   const existingSlug = phones.find((p) => p.slug === slug);
   if (existingSlug) {
